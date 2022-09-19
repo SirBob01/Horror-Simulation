@@ -9,7 +9,6 @@ import {
   SpawnAttachment,
   TileAttachment,
 } from './Attachment';
-import { TmxMap } from './TmxMap';
 import {
   MapLayers,
   Layer,
@@ -20,7 +19,7 @@ import {
   TileImage,
 } from './WorldMap';
 
-export { MapLayers, TmxMap };
+export { MapLayers };
 export type {
   WorldMap,
   Layer,
