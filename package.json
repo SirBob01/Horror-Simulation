@@ -5,6 +5,10 @@
   "main": "./build/index.js",
   "module": "./build/index.js",
   "types": "./build/index.d.ts",
+  "files": [
+    "build",
+    "branchBuild.js"
+  ],
   "scripts": {
     "lint": "prettier --write src/* && eslint --fix src",
     "build": "tsc",
