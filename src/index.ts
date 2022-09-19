@@ -4,3 +4,4 @@ export * from './Entity';
 export * from './Particle';
 export * from './Utils';
 export * from './Assets';
+export * from './Network';
