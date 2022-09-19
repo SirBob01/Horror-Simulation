@@ -17,6 +17,7 @@ import {
   ServerMap,
   Tile,
   TileImage,
+  LayerTiles,
 } from './WorldMap';
 
 export { MapLayers };
@@ -24,6 +25,7 @@ export type {
   WorldMap,
   Layer,
   Tile,
+  LayerTiles,
   TileImage,
   TileAttachment,
   NarrowAttachment,
