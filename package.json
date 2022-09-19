@@ -1,0 +1,37 @@
+{
+  "name": "horror-simulation",
+  "version": "1.0.0",
+  "description": "game logic for `HorrorWorkingTitle`",
+  "main": "./build/index.js",
+  "module": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "scripts": {
+    "lint": "prettier --write src/* && eslint --fix src",
+    "build": "tsc",
+    "debug": "nodemon src/index.ts",
+    "start": "tsc && nodemon build/index.js",
+    "postinstall": "node branchBuild.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SirBob01/Horror-Simulation.git"
+  },
+  "author": "Keith Leonardo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SirBob01/Horror-Simulation/issues"
+  },
+  "homepage": "https://github.com/SirBob01/Horror-Simulation#readme",
+  "dependencies": {
+    "@types/node": "^18.7.18",
+    "dynamojs-engine": "^1.5.6",
+    "typescript": "^4.8.3"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.36.1",
+    "eslint": "^8.23.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1"
+  }
+}
