@@ -71,22 +71,22 @@ interface WorldMapSocketData {
   /**
    * Raw image buffers for each tileset
    */
-  tilesets: Map<string, Buffer>;
+  tilesets: [string, Buffer][];
 
   /**
    * Tile attachment mapping
    */
-  attachments: Map<Tile, Map<TileAttachment['type'], TileAttachment[]>>;
+  attachments: [Tile, [TileAttachment['type'], TileAttachment[]][]][];
 
   /**
    * Tile sprite mapping
    */
-  sprites: Map<Tile, TileImage>;
+  sprites: [Tile, TileImage][];
 
   /**
    * Actual map tile data
    */
-  layers: Map<Layer, LayerTiles>;
+  layers: [Layer, LayerTiles][];
 
   /**
    * Is the map outdoors?
