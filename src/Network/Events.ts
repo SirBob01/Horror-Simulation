@@ -1,4 +1,4 @@
-import { KeyInputSocketData, MouseInputSocketData } from './Input';
+import { InputSocketData } from './Input';
 import { LobbySocketData, StartSocketData } from './Startup';
 import { GameStateSocketData, MapTransitionSocketData } from './State';
 
@@ -37,14 +37,9 @@ interface ClientToServerEvents {
   stop: () => void;
 
   /**
-   * Handle keyboard input
+   * Handle user input event
    */
-  keystate: (input: KeyInputSocketData) => void;
-
-  /**
-   * Handle mouse input
-   */
-  mousestate: (input: MouseInputSocketData) => void;
+  input: (input: InputSocketData) => void;
 
   /**
    * Kick a player
