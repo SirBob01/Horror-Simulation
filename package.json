@@ -12,8 +12,6 @@
   "scripts": {
     "lint": "prettier --write src/* && eslint --fix src",
     "build": "tsc",
-    "debug": "nodemon src/index.ts",
-    "start": "tsc && nodemon build/index.js",
     "postinstall": "node branchBuild.js"
   },
   "repository": {
