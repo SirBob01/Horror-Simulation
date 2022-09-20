@@ -67,4 +67,4 @@ interface Controllable {
   handle_input(event: InputEvent): void;
 }
 
-export type { InputEvent, Controllable };
+export type { InputEvent, ButtonEvent, MouseEvent, Controllable };
