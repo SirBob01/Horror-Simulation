@@ -2,12 +2,13 @@ import { randrange, Vec2D } from 'dynamojs-engine';
 import { hit_sounds } from '../Assets';
 import { Blood } from '../Particle';
 import { Bullet } from './Bullet';
+import { Controllable, InputEvent } from './Controllable';
 import { Entity } from './Entity';
 
 /**
  * Monster entity
  */
-class Monster extends Entity {
+class Monster extends Entity implements Controllable {
   private walk_speed: number;
   private chase_speed: number;
   private max_speed: number;
@@ -42,6 +43,70 @@ class Monster extends Entity {
 
     this.heading = 0;
     this.patrol_points = [];
+  }
+
+  /**
+   * Handle input events
+   *
+   * @param event
+   */
+  handle_input(event: InputEvent) {
+    if (event.type === 'left' && event.pressed) {
+      if (event.pressed) {
+        this.vel.x = -this.current_speed;
+      } else if (this.vel.x < 0) {
+        this.vel.x = 0;
+      }
+    }
+    if (event.type === 'right' && event.pressed) {
+      if (event.pressed) {
+        this.vel.x = this.current_speed;
+      } else if (this.vel.x > 0) {
+        this.vel.x = 0;
+      }
+    }
+    if (event.type === 'up' && event.pressed) {
+      if (event.pressed) {
+        this.vel.y = -this.current_speed;
+      } else if (this.vel.y < 0) {
+        this.vel.y = 0;
+      }
+    }
+    if (event.type === 'down' && event.pressed) {
+      if (event.pressed) {
+        this.vel.y = this.current_speed;
+      } else if (this.vel.y > 0) {
+        this.vel.y = 0;
+      }
+    }
+    if (event.type === 'left' && event.pressed) {
+      if (event.pressed) {
+        this.vel.x = -this.current_speed;
+      } else if (this.vel.x < 0) {
+        this.vel.x = 0;
+      }
+    }
+    if (event.type === 'right' && event.pressed) {
+      if (event.pressed) {
+        this.vel.x = this.current_speed;
+      } else if (this.vel.x > 0) {
+        this.vel.x = 0;
+      }
+    }
+    if (event.type === 'up' && event.pressed) {
+      if (event.pressed) {
+        this.vel.y = -this.current_speed;
+      } else if (this.vel.y < 0) {
+        this.vel.y = 0;
+      }
+    }
+    if (event.type === 'down' && event.pressed) {
+      if (event.pressed) {
+        this.vel.y = this.current_speed;
+      } else if (this.vel.y > 0) {
+        this.vel.y = 0;
+      }
+    }
   }
 
   /**

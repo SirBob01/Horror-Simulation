@@ -4,11 +4,12 @@ import { Bullet } from '../Bullet';
 import { Entity } from '../Entity';
 import { Flashlight } from './Flashlight';
 import { Light } from '../../World';
+import { Controllable, InputEvent } from '../Controllable';
 
 /**
  * Human character
  */
-class Human extends Entity {
+class Human extends Entity implements Controllable {
   protected speed: number;
 
   protected max_health: number;
@@ -28,7 +29,7 @@ class Human extends Entity {
   protected muzzle_flash: Light;
   protected muzzle_timer: number;
 
-  flashlight: Flashlight;
+  protected flashlight: Flashlight;
 
   /**
    * Create a new human entity
@@ -68,45 +69,51 @@ class Human extends Entity {
   }
 
   /**
-   * Move left
+   * Handle input events
+   *
+   * @param event
    */
-  move_left() {
-    this.vel.x = -this.speed;
-  }
+  handle_input(event: InputEvent): void {
+    // Flashlight cone determines the player's direction
+    const flashcone = this.flashlight.get_cone();
 
-  /**
-   * Move right
-   */
-  move_right() {
-    this.vel.x = this.speed;
-  }
-
-  /**
-   * Move up
-   */
-  move_up() {
-    this.vel.y = -this.speed;
-  }
-
-  /**
-   * Move down
-   */
-  move_down() {
-    this.vel.y = this.speed;
-  }
-
-  /**
-   * Stop horizontal movement
-   */
-  stop_horizontal() {
-    this.vel.x = 0;
-  }
-
-  /**
-   * Stop vertical movement
-   */
-  stop_vertical() {
-    this.vel.y = 0;
+    if (event.type === 'left' && event.pressed) {
+      if (event.pressed) {
+        this.vel.x = -this.speed;
+      } else if (this.vel.x < 0) {
+        this.vel.x = 0;
+      }
+    }
+    if (event.type === 'right' && event.pressed) {
+      if (event.pressed) {
+        this.vel.x = this.speed;
+      } else if (this.vel.x > 0) {
+        this.vel.x = 0;
+      }
+    }
+    if (event.type === 'up' && event.pressed) {
+      if (event.pressed) {
+        this.vel.y = -this.speed;
+      } else if (this.vel.y < 0) {
+        this.vel.y = 0;
+      }
+    }
+    if (event.type === 'down' && event.pressed) {
+      if (event.pressed) {
+        this.vel.y = this.speed;
+      } else if (this.vel.y > 0) {
+        this.vel.y = 0;
+      }
+    }
+    if (event.type === 'use3' && event.pressed) {
+      this.flashlight.switch();
+    }
+    if (event.type === 'attack') {
+      this.shoot(flashcone.dir);
+    }
+    if (event.type === 'mouse') {
+      flashcone.dir = this.center.sub(event.position);
+    }
   }
 
   /**

@@ -1,4 +1,4 @@
-import { InputSocketData } from './Input';
+import { InputEvent } from '../Entity';
 import { LobbySocketData, StartSocketData } from './Startup';
 import { GameStateSocketData, MapTransitionSocketData } from './State';
 
@@ -39,7 +39,7 @@ interface ClientToServerEvents {
   /**
    * Handle user input event
    */
-  input: (input: InputSocketData) => void;
+  input: (input: InputEvent) => void;
 
   /**
    * Kick a player
