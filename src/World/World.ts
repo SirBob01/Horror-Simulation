@@ -5,6 +5,7 @@ import { Sound } from './Sound';
 import { MapLayers, WorldMap } from '../Map';
 import { Quadtree } from '../Utils';
 import { Particle } from '../Particle';
+import { GameStateSocketData } from '../Network';
 
 /**
  * Handler for when an entity transitions between worlds
@@ -311,6 +312,17 @@ class World {
    */
   add_entity(entity: Entity) {
     this.entities.push(entity);
+  }
+
+  /**
+   * Get the information to be transmitted via socket
+   */
+  get_socket_data() {
+    return {
+      entities: this.entities.map((entity) => entity.get_socket_data()),
+      lights: this.lights,
+      sounds: this.sounds,
+    } as GameStateSocketData;
   }
 }
 

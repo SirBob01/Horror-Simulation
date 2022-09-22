@@ -1,5 +1,6 @@
 import { randrange, Vec2D } from 'dynamojs-engine';
 import { hit_sounds } from '../Assets';
+import { MonsterEntitySocketData } from '../Network';
 import { Blood } from '../Particle';
 import { Bullet } from './Bullet';
 import { Controllable, InputEvent } from './Controllable';
@@ -194,6 +195,7 @@ class Monster extends Entity implements Controllable {
    */
   get_socket_data() {
     return {
+      type: 'monster',
       id: this.id,
       center: this.center,
       size: this.dim,
@@ -201,7 +203,7 @@ class Monster extends Entity implements Controllable {
       vel: this.vel,
       accel: this.accel,
       alive: this.alive,
-    };
+    } as MonsterEntitySocketData;
   }
 }
 

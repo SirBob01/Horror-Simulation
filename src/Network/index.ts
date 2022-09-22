@@ -1,11 +1,13 @@
 import { ClientToServerEvents, ServerToClientEvents } from './Events';
 import { InputEvent } from '../Entity';
 import { LobbySocketData, PlayerSocketData, StartSocketData } from './Startup';
+import { GameStateSocketData, MapTransitionSocketData } from './State';
 import {
+  BulletEntitySocketData,
   EntitySocketData,
-  GameStateSocketData,
-  MapTransitionSocketData,
-} from './State';
+  HumanEntitySocketData,
+  MonsterEntitySocketData,
+} from './Entity';
 
 export type {
   ClientToServerEvents,
@@ -15,6 +17,9 @@ export type {
   LobbySocketData,
   StartSocketData,
   EntitySocketData,
+  HumanEntitySocketData,
+  MonsterEntitySocketData,
+  BulletEntitySocketData,
   GameStateSocketData,
   MapTransitionSocketData,
 };

@@ -5,7 +5,7 @@ import { Entity } from '../Entity';
 import { Flashlight } from './Flashlight';
 import { Light } from '../../World';
 import { Controllable, InputEvent } from '../Controllable';
-import { EntitySocketData } from '../../Network';
+import { HumanEntitySocketData } from '../../Network';
 
 /**
  * Human character
@@ -247,8 +247,9 @@ class Human extends Entity implements Controllable {
   /**
    * Get the data that will be transmitted via socket
    */
-  get_socket_data(): EntitySocketData {
+  get_socket_data() {
     return {
+      type: 'human',
       id: this.id,
       center: this.center,
       size: this.dim,
@@ -256,7 +257,9 @@ class Human extends Entity implements Controllable {
       vel: this.vel,
       accel: this.accel,
       alive: this.alive,
-    };
+      health: this.health,
+      ammo: this.ammo,
+    } as HumanEntitySocketData;
   }
 }
 

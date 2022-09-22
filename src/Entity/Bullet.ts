@@ -1,4 +1,4 @@
-import { EntitySocketData } from '../Network';
+import { BulletEntitySocketData } from '../Network';
 import { Entity } from './Entity';
 
 /**
@@ -46,8 +46,9 @@ class Bullet extends Entity {
   /**
    * Get the information that will be transmitted via socket
    */
-  get_socket_data(): EntitySocketData {
+  get_socket_data() {
     return {
+      type: 'bullet',
       id: this.id,
       center: this.center,
       size: this.dim,
@@ -55,7 +56,8 @@ class Bullet extends Entity {
       vel: this.vel,
       accel: this.accel,
       alive: this.alive,
-    };
+      source_id: this.source.id,
+    } as BulletEntitySocketData;
   }
 }
 
