@@ -9,6 +9,7 @@ interface GameStateSocketData {
   entities: EntitySocketData[];
   sounds: Sound[];
   lights: Light[];
+  player_entity_id: number;
 }
 
 /**
