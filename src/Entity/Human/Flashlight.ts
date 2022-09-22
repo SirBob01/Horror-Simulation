@@ -66,8 +66,8 @@ class Flashlight {
     if (this.on) {
       // Update flashlight brightness
       // This is clipped to 50% (so it still remains visible), but the battery will still drain
-      this.core.turn_on();
-      this.cone.turn_on();
+      this.core.on = true;
+      this.cone.on = true;
 
       this.battery = clamp(
         this.battery - dt * this.use_rate,
@@ -89,20 +89,20 @@ class Flashlight {
       if (this.battery < this.max_battery / 3) {
         if (this.flicker_time === 0 && Math.random() < 0.1) {
           this.flicker_time = clamp(Math.random() * 0.3, 0.15, 0.3);
-          this.cone.turn_off();
-          this.core.turn_off();
+          this.cone.on = false;
+          this.core.on = false;
         }
         if (this.flicker_time > 0) {
           this.flicker_time -= dt;
         } else {
           this.flicker_time = 0;
-          this.cone.turn_on();
-          this.core.turn_on();
+          this.cone.on = true;
+          this.core.on = true;
         }
       }
     } else {
-      this.core.turn_off();
-      this.cone.turn_off();
+      this.core.on = false;
+      this.cone.on = false;
     }
 
     // Offset the cone by a little bit

@@ -17,8 +17,7 @@ interface GeometricSide {
  * 2D shadow-casting point light implementation
  */
 class Light extends AABB {
-  private on: boolean;
-
+  on: boolean;
   color: Color;
   dir: Vec2D;
   half_angle: number;
@@ -259,27 +258,6 @@ class Light extends AABB {
       );
     });
     return intersects;
-  }
-
-  /**
-   * Turn on the light (start rendering it)
-   */
-  turn_on() {
-    this.on = true;
-  }
-
-  /**
-   * Turn off the light (stop rendering it)
-   */
-  turn_off() {
-    this.on = false;
-  }
-
-  /**
-   * Check if the light is on
-   */
-  is_on() {
-    return this.on;
   }
 
   /**

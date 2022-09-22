@@ -5,6 +5,7 @@ import { Entity } from '../Entity';
 import { Flashlight } from './Flashlight';
 import { Light } from '../../World';
 import { Controllable, InputEvent } from '../Controllable';
+import { EntitySocketData } from '../../Network';
 
 /**
  * Human character
@@ -38,7 +39,7 @@ class Human extends Entity implements Controllable {
    * @param y World y-position
    */
   constructor(x: number, y: number) {
-    super('human', 'friendly', x, y, 24, 48, 'Collider');
+    super('friendly', x, y, 24, 48, 'Collider');
     this.speed = 0.1;
 
     this.max_health = 3;
@@ -241,6 +242,21 @@ class Human extends Entity implements Controllable {
       });
       this.reloading = true;
     }
+  }
+
+  /**
+   * Get the data that will be transmitted via socket
+   */
+  get_socket_data(): EntitySocketData {
+    return {
+      id: this.id,
+      center: this.center,
+      size: this.dim,
+      dir: this.dir,
+      vel: this.vel,
+      accel: this.accel,
+      alive: this.alive,
+    };
   }
 }
 

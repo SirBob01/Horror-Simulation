@@ -1,5 +1,5 @@
 import { clamp } from 'dynamojs-engine';
-import { Entity } from '../Entity';
+import { Entity, Human, Monster } from '../Entity';
 import { Light } from './Light';
 import { Sound } from './Sound';
 import { MapLayers, WorldMap } from '../Map';
@@ -80,7 +80,7 @@ class World {
 
     for (let x = left; x <= right; x++) {
       for (let y = top; y <= bottom; y++) {
-        if (entity.name === 'human' || entity.name === 'monster') {
+        if (entity instanceof Human || entity instanceof Monster) {
           // Hit collider for exit
           const exits = this.map.get_attachments(x, y, 'Background', 'Exit');
           for (const exit of exits) {

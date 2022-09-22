@@ -1,3 +1,4 @@
+import { EntitySocketData } from '../Network';
 import { Entity } from './Entity';
 
 /**
@@ -16,7 +17,7 @@ class Bullet extends Entity {
    * @param source Source entity (who fired the gun?)
    */
   constructor(x: number, y: number, dx: number, dy: number, source: Entity) {
-    super('bullet', 'player', x, y, 5, 5, 'Blocker');
+    super('friendly', x, y, 5, 5, 'Blocker');
     const bullet_speed = 2;
     this.vel.x = dx * bullet_speed;
     this.vel.y = dy * bullet_speed;
@@ -31,13 +32,30 @@ class Bullet extends Entity {
   }
 
   /**
-   * Destroy the bullet on contact with another entity (that is not the source)
+   * Destroy the bullet on contact with another entity with a different
+   * alignment (friend or foe)
+   *
    * @param entity
    */
   interact_with(entity: Entity) {
-    if (entity !== this.source) {
+    if (entity.align !== this.align) {
       this.kill();
     }
+  }
+
+  /**
+   * Get the information that will be transmitted via socket
+   */
+  get_socket_data(): EntitySocketData {
+    return {
+      id: this.id,
+      center: this.center,
+      size: this.dim,
+      dir: this.dir,
+      vel: this.vel,
+      accel: this.accel,
+      alive: this.alive,
+    };
   }
 }
 

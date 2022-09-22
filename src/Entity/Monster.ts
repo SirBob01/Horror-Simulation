@@ -23,18 +23,7 @@ class Monster extends Entity implements Controllable {
    * @param y World y-coordinate
    */
   constructor(x: number, y: number) {
-    super(
-      'monster',
-      'friendly',
-      x,
-      y,
-      36,
-      72,
-      'Collider',
-      250,
-      Math.PI / 4,
-      250
-    );
+    super('hostile', x, y, 36, 72, 'Collider', 250, Math.PI / 4, 250);
 
     this.walk_speed = 0.08;
     this.chase_speed = 0.09;
@@ -172,6 +161,11 @@ class Monster extends Entity implements Controllable {
     this.follow_path();
   }
 
+  /**
+   * Interact with another entity
+   *
+   * @param entity
+   */
   interact_with(entity: Entity) {
     if (entity instanceof Bullet) {
       const dir = entity.vel.unit();
@@ -193,6 +187,21 @@ class Monster extends Entity implements Controllable {
         sound: hit_sounds[Math.floor(Math.random() * hit_sounds.length)],
       });
     }
+  }
+
+  /**
+   * Get the information that will be transmitted via socket
+   */
+  get_socket_data() {
+    return {
+      id: this.id,
+      center: this.center,
+      size: this.dim,
+      dir: this.dir,
+      vel: this.vel,
+      accel: this.accel,
+      alive: this.alive,
+    };
   }
 }
 

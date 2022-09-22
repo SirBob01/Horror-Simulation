@@ -3,7 +3,15 @@ import { FieldOfView } from './FOV';
 import { Light, Sound } from '../World';
 import { SolidAttachment } from '../Map';
 import { Particle } from '../Particle';
-import { shortest_path } from '../Utils';
+import { IdGenerator, shortest_path } from '../Utils';
+import { EntitySocketData } from '../Network';
+
+/**
+ * Various alignments of the entities
+ *
+ * This will affect the interactions between them
+ */
+type EntityAlignment = 'friendly' | 'hostile';
 
 /**
  * World input for the entity read from virtual "sensors"
@@ -83,9 +91,9 @@ interface CollisionTable {
  *
  * Individual actors in the game world
  */
-class Entity extends AABB {
-  name: string;
-  align: string;
+abstract class Entity extends AABB {
+  id: number;
+  align: EntityAlignment;
   vel: Vec2D;
   accel: Vec2D;
   dir: Vec2D;
@@ -101,7 +109,6 @@ class Entity extends AABB {
   /**
    * Create a new entity
    *
-   * @param name         Name of the entity
    * @param align        Alignment of the entity (friendly or hostile)
    * @param x            World x-coordinate
    * @param y            World y-cooridnate
@@ -113,8 +120,7 @@ class Entity extends AABB {
    * @param view_range   Range of view    (visual sensor)
    */
   constructor(
-    name: string,
-    align: string,
+    align: EntityAlignment,
     x: number,
     y: number,
     w: number,
@@ -125,7 +131,7 @@ class Entity extends AABB {
     view_range = 0
   ) {
     super(x, y, w, h);
-    this.name = name;
+    this.id = IdGenerator.get_instance().generate();
     this.align = align;
     this.solid_tile = solid_tile;
 
@@ -187,6 +193,7 @@ class Entity extends AABB {
    */
   kill() {
     this.alive = false;
+    IdGenerator.get_instance().discard(this.id);
   }
 
   /**
@@ -264,6 +271,11 @@ class Entity extends AABB {
   update(dt: number) {
     return;
   }
+
+  /**
+   * Get the data required for socket transmission
+   */
+  abstract get_socket_data(): EntitySocketData;
 }
 
 export { Entity };
