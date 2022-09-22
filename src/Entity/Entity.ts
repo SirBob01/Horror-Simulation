@@ -131,7 +131,7 @@ abstract class Entity extends AABB {
     view_range = 0
   ) {
     super(x, y, w, h);
-    this.id = IdGenerator.get_instance().generate();
+    this.id = IdGenerator.generate();
     this.align = align;
     this.solid_tile = solid_tile;
 
@@ -193,7 +193,6 @@ abstract class Entity extends AABB {
    */
   kill() {
     this.alive = false;
-    IdGenerator.get_instance().discard(this.id);
   }
 
   /**

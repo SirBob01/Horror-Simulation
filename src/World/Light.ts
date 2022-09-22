@@ -1,5 +1,6 @@
 import { AABB, clamp, Color, Segment, Vec2D } from 'dynamojs-engine';
 import { WorldMap, Layer } from '../Map';
+import { IdGenerator } from '../Utils';
 
 interface GeometricSide {
   /**
@@ -17,10 +18,11 @@ interface GeometricSide {
  * 2D shadow-casting point light implementation
  */
 class Light extends AABB {
-  on: boolean;
+  id: number;
   color: Color;
-  dir: Vec2D;
   half_angle: number;
+  dir: Vec2D;
+  on: boolean;
 
   /**
    * Construct a new light
@@ -41,11 +43,12 @@ class Light extends AABB {
     half_angle: number
   ) {
     super(x, y, radius * 2, radius * 2);
-    // NEVER make abs(half_angle) >= Math.PI/2
+    this.id = IdGenerator.generate();
     this.color = color;
 
-    this.dir = dir;
+    // NEVER make abs(half_angle) >= Math.PI/2
     this.half_angle = half_angle;
+    this.dir = dir;
 
     this.on = true;
   }
