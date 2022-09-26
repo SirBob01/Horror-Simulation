@@ -275,6 +275,11 @@ abstract class Entity extends AABB {
    * Get the data required for socket transmission
    */
   abstract get_socket_data(): EntitySocketData;
+
+  /**
+   * Update the entity given transmitted socket data
+   */
+  abstract set_socket_data(data: EntitySocketData): void;
 }
 
 export { Entity };

@@ -8,9 +8,7 @@ import { Light } from '../World';
 interface BaseEntitySocketData {
   id: Id;
   center: Vec2D;
-  size: Vec2D;
   vel: Vec2D;
-  accel: Vec2D;
   dir: Vec2D;
   alive: boolean;
 }

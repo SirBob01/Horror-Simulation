@@ -1,11 +1,12 @@
 import { BulletEntitySocketData } from '../Network';
+import { Id } from '../Utils';
 import { Entity } from './Entity';
 
 /**
  * Bullet projectile fired from the player gun
  */
 class Bullet extends Entity {
-  private source: Entity;
+  private source_id: Id;
 
   /**
    * Create a new bullet
@@ -21,7 +22,7 @@ class Bullet extends Entity {
     const bullet_speed = 2;
     this.vel.x = dx * bullet_speed;
     this.vel.y = dy * bullet_speed;
-    this.source = source;
+    this.source_id = source.id;
   }
 
   /**
@@ -51,13 +52,30 @@ class Bullet extends Entity {
       type: 'bullet',
       id: this.id,
       center: this.center,
-      size: this.dim,
       dir: this.dir,
       vel: this.vel,
-      accel: this.accel,
       alive: this.alive,
-      source_id: this.source.id,
+      source_id: this.source_id,
     } as BulletEntitySocketData;
+  }
+
+  /**
+   * Update state from socket data
+   *
+   * @param data
+   */
+  set_socket_data(data: BulletEntitySocketData) {
+    this.center.x = data.center.x;
+    this.center.y = data.center.y;
+
+    this.dir.x = data.dir.x;
+    this.dir.y = data.dir.y;
+
+    this.vel.x = data.vel.x;
+    this.vel.y = data.vel.y;
+
+    this.alive = data.alive;
+    this.source_id = data.source_id;
   }
 }
 

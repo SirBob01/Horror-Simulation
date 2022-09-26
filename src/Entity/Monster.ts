@@ -170,12 +170,28 @@ class Monster extends Entity implements Controllable {
       type: 'monster',
       id: this.id,
       center: this.center,
-      size: this.dim,
       dir: this.dir,
       vel: this.vel,
-      accel: this.accel,
       alive: this.alive,
     } as MonsterEntitySocketData;
+  }
+
+  /**
+   * Update state from socket data
+   *
+   * @param data
+   */
+  set_socket_data(data: MonsterEntitySocketData) {
+    this.center.x = data.center.x;
+    this.center.y = data.center.y;
+
+    this.dir.x = data.dir.x;
+    this.dir.y = data.dir.y;
+
+    this.vel.x = data.vel.x;
+    this.vel.y = data.vel.y;
+
+    this.alive = data.alive;
   }
 }
 

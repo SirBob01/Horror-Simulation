@@ -252,10 +252,8 @@ class Human extends Entity implements Controllable {
       type: 'human',
       id: this.id,
       center: this.center,
-      size: this.dim,
       dir: this.dir,
       vel: this.vel,
-      accel: this.accel,
       alive: this.alive,
       health: this.health,
       ammo: this.ammo,
@@ -266,6 +264,39 @@ class Human extends Entity implements Controllable {
         battery: this.flashlight.battery,
       },
     } as HumanEntitySocketData;
+  }
+
+  /**
+   * Update state from socket data
+   *
+   * @param data
+   */
+  set_socket_data(data: HumanEntitySocketData) {
+    this.center.x = data.center.x;
+    this.center.y = data.center.y;
+
+    this.dir.x = data.dir.x;
+    this.dir.y = data.dir.y;
+
+    this.vel.x = data.vel.x;
+    this.vel.y = data.vel.y;
+
+    this.alive = data.alive;
+    this.health = data.health;
+    this.ammo = data.ammo;
+
+    this.flashlight.core.center.x = data.flashlight.cone.center.x;
+    this.flashlight.core.center.y = data.flashlight.cone.center.y;
+    this.flashlight.core.dir.x = data.flashlight.cone.dir.x;
+    this.flashlight.core.dir.y = data.flashlight.cone.dir.y;
+
+    this.flashlight.core.center.x = data.flashlight.cone.center.x;
+    this.flashlight.core.center.y = data.flashlight.cone.center.y;
+    this.flashlight.core.dir.x = data.flashlight.cone.dir.x;
+    this.flashlight.core.dir.y = data.flashlight.cone.dir.y;
+
+    this.flashlight.battery = data.flashlight.battery;
+    this.flashlight.on = data.flashlight.on;
   }
 }
 
