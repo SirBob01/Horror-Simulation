@@ -130,8 +130,8 @@ class Monster extends Entity implements Controllable {
    * @param dt Delta time
    */
   update(dt: number) {
-    this.patrol(this.input.waypoints);
-    this.follow_path();
+    // this.patrol(this.input.waypoints);
+    // this.follow_path();
   }
 
   /**
