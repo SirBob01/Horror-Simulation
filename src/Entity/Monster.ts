@@ -43,28 +43,28 @@ class Monster extends Entity implements Controllable {
   handle_input(event: InputEvent) {
     if (event.type === 'left') {
       if (event.pressed) {
-        this.dir.x = -this.current_speed;
-      } else if (this.vel.x < 0) {
+        this.dir.x = -1;
+      } else if (this.dir.x < 0) {
         this.dir.x = 0;
       }
     }
     if (event.type === 'right') {
       if (event.pressed) {
-        this.dir.x = this.current_speed;
+        this.dir.x = 1;
       } else if (this.dir.x > 0) {
         this.dir.x = 0;
       }
     }
     if (event.type === 'up') {
       if (event.pressed) {
-        this.dir.y = -this.current_speed;
+        this.dir.y = -1;
       } else if (this.dir.y < 0) {
         this.dir.y = 0;
       }
     }
     if (event.type === 'down') {
       if (event.pressed) {
-        this.dir.y = this.current_speed;
+        this.dir.y = 1;
       } else if (this.dir.y > 0) {
         this.dir.y = 0;
       }
