@@ -43,30 +43,30 @@ class Monster extends Entity implements Controllable {
   handle_input(event: InputEvent) {
     if (event.type === 'left') {
       if (event.pressed) {
-        this.vel.x = -this.current_speed;
+        this.dir.x = -this.current_speed;
       } else if (this.vel.x < 0) {
-        this.vel.x = 0;
+        this.dir.x = 0;
       }
     }
     if (event.type === 'right') {
       if (event.pressed) {
-        this.vel.x = this.current_speed;
-      } else if (this.vel.x > 0) {
-        this.vel.x = 0;
+        this.dir.x = this.current_speed;
+      } else if (this.dir.x > 0) {
+        this.dir.x = 0;
       }
     }
     if (event.type === 'up') {
       if (event.pressed) {
-        this.vel.y = -this.current_speed;
-      } else if (this.vel.y < 0) {
-        this.vel.y = 0;
+        this.dir.y = -this.current_speed;
+      } else if (this.dir.y < 0) {
+        this.dir.y = 0;
       }
     }
     if (event.type === 'down') {
       if (event.pressed) {
-        this.vel.y = this.current_speed;
-      } else if (this.vel.y > 0) {
-        this.vel.y = 0;
+        this.dir.y = this.current_speed;
+      } else if (this.dir.y > 0) {
+        this.dir.y = 0;
       }
     }
   }
@@ -132,6 +132,15 @@ class Monster extends Entity implements Controllable {
   update(dt: number) {
     // this.patrol(this.input.waypoints);
     // this.follow_path();
+    if (this.dir.x || this.dir.y) {
+      const desired = this.dir.unit().scale(this.max_speed);
+      const accel = desired.sub(this.vel).scale(1 / 20);
+      this.vel.x = Math.min(this.vel.x + accel.x, this.max_speed);
+      this.vel.y = Math.min(this.vel.y + accel.y, this.max_speed);  
+    } else {
+      this.vel.x = 0;
+      this.vel.y = 0;
+    }
   }
 
   /**
