@@ -11,26 +11,26 @@ import { HumanEntitySocketData } from '../../Network';
  * Human character
  */
 class Human extends Entity implements Controllable {
-  protected speed: number;
+  speed: number;
 
-  protected max_health: number;
-  protected health: number;
+  max_health: number;
+  health: number;
 
-  protected max_ammo: number;
-  protected ammo: number;
-  protected ammo_inventory: number;
+  max_ammo: number;
+  ammo: number;
+  ammo_inventory: number;
 
-  protected reloading: boolean;
-  protected max_reload_timer: number;
-  protected reload_timer: number;
+  reloading: boolean;
+  max_reload_timer: number;
+  reload_timer: number;
 
-  protected max_shoot_timer;
-  protected shoot_timer;
+  max_shoot_timer;
+  shoot_timer;
 
-  protected muzzle_flash: Light;
-  protected muzzle_timer: number;
+  muzzle_flash: Light;
+  muzzle_timer: number;
 
-  protected flashlight: Flashlight;
+  flashlight: Flashlight;
 
   /**
    * Create a new human entity
@@ -76,7 +76,7 @@ class Human extends Entity implements Controllable {
    */
   handle_input(event: InputEvent): void {
     // Flashlight cone determines the player's direction
-    const flashcone = this.flashlight.get_cone();
+    const flashcone = this.flashlight.cone;
 
     if (event.type === 'left' && event.pressed) {
       if (event.pressed) {
@@ -155,10 +155,7 @@ class Human extends Entity implements Controllable {
 
     // Update flashlight
     this.flashlight.update(dt, this.center);
-    this.output.lights.push(
-      this.flashlight.get_core(),
-      this.flashlight.get_cone()
-    );
+    this.output.lights.push(this.flashlight.core, this.flashlight.cone);
 
     // Muzzle flash effect
     if (this.muzzle_timer > 0) {

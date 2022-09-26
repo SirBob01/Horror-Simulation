@@ -5,9 +5,9 @@ import { Particle } from './Particle';
  * Persistent blood particle effects
  */
 class Blood extends Particle {
-  private vel: Vec2D;
-  private life: number;
-  private speed: number;
+  vel: Vec2D;
+  life: number;
+  speed: number;
 
   /**
    * Create a new blood particle

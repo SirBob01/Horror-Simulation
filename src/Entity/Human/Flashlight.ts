@@ -28,20 +28,6 @@ class Flashlight {
   }
 
   /**
-   * Get the flashlight cone
-   */
-  get_cone() {
-    return this.cone;
-  }
-
-  /**
-   * Get the flashlight core
-   */
-  get_core() {
-    return this.core;
-  }
-
-  /**
    * Toggle between on and off
    */
   switch() {
