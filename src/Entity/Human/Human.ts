@@ -254,7 +254,6 @@ class Human extends Entity implements Controllable {
       center: this.center,
       dir: this.dir,
       vel: this.vel,
-      alive: this.alive,
       health: this.health,
       ammo: this.ammo,
       flashlight: {
@@ -281,7 +280,6 @@ class Human extends Entity implements Controllable {
     this.vel.x = data.vel.x;
     this.vel.y = data.vel.y;
 
-    this.alive = data.alive;
     this.health = data.health;
     this.ammo = data.ammo;
 

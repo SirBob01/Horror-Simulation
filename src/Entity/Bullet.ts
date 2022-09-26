@@ -54,7 +54,6 @@ class Bullet extends Entity {
       center: this.center,
       dir: this.dir,
       vel: this.vel,
-      alive: this.alive,
       source_id: this.source_id,
     } as BulletEntitySocketData;
   }
@@ -74,7 +73,6 @@ class Bullet extends Entity {
     this.vel.x = data.vel.x;
     this.vel.y = data.vel.y;
 
-    this.alive = data.alive;
     this.source_id = data.source_id;
   }
 }

@@ -10,7 +10,6 @@ interface BaseEntitySocketData {
   center: Vec2D;
   vel: Vec2D;
   dir: Vec2D;
-  alive: boolean;
 }
 
 /**

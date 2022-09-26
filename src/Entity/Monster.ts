@@ -172,7 +172,6 @@ class Monster extends Entity implements Controllable {
       center: this.center,
       dir: this.dir,
       vel: this.vel,
-      alive: this.alive,
     } as MonsterEntitySocketData;
   }
 
@@ -190,8 +189,6 @@ class Monster extends Entity implements Controllable {
 
     this.vel.x = data.vel.x;
     this.vel.y = data.vel.y;
-
-    this.alive = data.alive;
   }
 }
 
