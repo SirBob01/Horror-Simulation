@@ -113,7 +113,10 @@ class Human extends Entity implements Controllable {
       this.shoot(flashcone.dir);
     }
     if (event.type === 'mouse') {
-      flashcone.dir = this.center.sub(event.position);
+      flashcone.dir = new Vec2D(
+        event.position.x - this.center.x,
+        event.position.y - this.center.y
+      );
     }
   }
 
