@@ -78,28 +78,28 @@ class Human extends Entity implements Controllable {
     // Flashlight cone determines the player's direction
     const flashcone = this.flashlight.cone;
 
-    if (event.type === 'left' && event.pressed) {
+    if (event.type === 'left') {
       if (event.pressed) {
         this.vel.x = -this.speed;
       } else if (this.vel.x < 0) {
         this.vel.x = 0;
       }
     }
-    if (event.type === 'right' && event.pressed) {
+    if (event.type === 'right') {
       if (event.pressed) {
         this.vel.x = this.speed;
       } else if (this.vel.x > 0) {
         this.vel.x = 0;
       }
     }
-    if (event.type === 'up' && event.pressed) {
+    if (event.type === 'up') {
       if (event.pressed) {
         this.vel.y = -this.speed;
       } else if (this.vel.y < 0) {
         this.vel.y = 0;
       }
     }
-    if (event.type === 'down' && event.pressed) {
+    if (event.type === 'down') {
       if (event.pressed) {
         this.vel.y = this.speed;
       } else if (this.vel.y > 0) {
