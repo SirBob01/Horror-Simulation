@@ -3,9 +3,9 @@ import { Entity, Human, Monster } from '../Entity';
 import { Light } from './Light';
 import { Sound } from './Sound';
 import { MapLayers, WorldMap } from '../Map';
-import { Quadtree } from '../Utils';
+import { Id, Quadtree } from '../Utils';
 import { Particle } from '../Particle';
-import { GameStateSocketData } from '../Network';
+import { EntitySocketData, GameStateSocketData } from '../Network';
 
 /**
  * Handler for when an entity transitions between worlds
@@ -21,7 +21,7 @@ type WorldExitHandler = (
  */
 class World {
   map: WorldMap;
-  entities: Entity[];
+  entities: Map<Id, Entity>;
   particles: Particle[];
   map_lights: Light[];
   lights: Light[];
@@ -39,7 +39,7 @@ class World {
     this.map = map;
 
     // Objects
-    this.entities = [];
+    this.entities = new Map();
     this.particles = []; // Non-interactive entities used for visual effects
 
     // World data for sensors
@@ -120,12 +120,12 @@ class World {
       this.map.size.x * this.map.tilesize.x,
       this.map.size.y * this.map.tilesize.y
     );
-    for (const ent of this.entities) {
+    this.entities.forEach((ent) => {
       qt.insert(ent);
-    }
+    });
 
     // Update entities
-    for (const ent of this.entities) {
+    this.entities.forEach((ent) => {
       // Set the input data based on the FOV sensors
       for (const light of this.lights) {
         if (
@@ -223,15 +223,17 @@ class World {
       if (tile_collision) {
         ent.on_collide();
       }
-    }
+    });
 
     // Register all entity output for next update step
     this.lights = [...this.map_lights];
     this.sounds = [];
-    for (const ent of this.entities) {
+    this.entities.forEach((ent) => {
+      ent.output.entities.forEach((ent2) => {
+        this.add_entity(ent2);
+      });
       this.lights.push(...ent.output.lights);
       this.sounds.push(...ent.output.sounds);
-      this.entities.push(...ent.output.entities);
       this.particles.push(...ent.output.particles);
       if (ent.alive) {
         ent.input = {
@@ -249,12 +251,9 @@ class World {
           particles: [],
         };
       } else {
-        const index = this.entities.indexOf(ent, 0);
-        if (index > -1) {
-          this.entities.splice(index, 1);
-        }
+        this.entities.delete(ent.id);
       }
-    }
+    });
   }
 
   /**
@@ -300,9 +299,7 @@ class World {
    * @param entity
    */
   remove_entity(entity: Entity) {
-    const index = this.entities.findIndex((query) => query === entity);
-    if (index < 0) return;
-    this.entities.splice(index, 1);
+    this.entities.delete(entity.id);
   }
 
   /**
@@ -311,17 +308,18 @@ class World {
    * @param entity
    */
   add_entity(entity: Entity) {
-    this.entities.push(entity);
+    this.entities.set(entity.id, entity);
   }
 
   /**
    * Get the information to be transmitted via socket
    */
-  get_socket_data(player_entity_id: number) {
-    return {
-      entities: this.entities.map((entity) => entity.get_socket_data()),
-      player_entity_id,
-    } as GameStateSocketData;
+  get_socket_data(player_entity_id: Id) {
+    const entities: EntitySocketData[] = [];
+    this.entities.forEach((entity) => {
+      entities.push(entity.get_socket_data());
+    });
+    return { entities, player_entity_id } as GameStateSocketData;
   }
 }
 

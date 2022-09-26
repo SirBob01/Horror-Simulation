@@ -1,4 +1,5 @@
 import { WorldMapSocketData } from '../Map';
+import { Id } from '../Utils';
 import { EntitySocketData } from './Entity';
 
 /**
@@ -6,7 +7,7 @@ import { EntitySocketData } from './Entity';
  */
 interface GameStateSocketData {
   entities: EntitySocketData[];
-  player_entity_id: number;
+  player_entity_id: Id;
 }
 
 /**

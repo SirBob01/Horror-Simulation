@@ -1,5 +1,6 @@
 import { Quadtree } from './Quadtree';
 import { shortest_path } from './Pathfinder';
-import { IdGenerator } from './IdGenerator';
+import { IdGenerator, Id } from './IdGenerator';
 
 export { IdGenerator, Quadtree, shortest_path };
+export type { Id };

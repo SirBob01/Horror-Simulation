@@ -1,5 +1,10 @@
+/**
+ * Unique identifier
+ */
+type Id = number;
+
 class IdGenerator {
-  private current_id: number;
+  private current_id: Id;
   private static instance?: IdGenerator;
 
   /**
@@ -21,3 +26,4 @@ class IdGenerator {
 }
 
 export { IdGenerator };
+export type { Id };

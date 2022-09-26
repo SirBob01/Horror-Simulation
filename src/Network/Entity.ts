@@ -1,11 +1,12 @@
 import { Vec2D } from 'dynamojs-engine';
+import { Id } from '../Utils';
 import { Light } from '../World';
 
 /**
  * Entity state information
  */
 interface BaseEntitySocketData {
-  id: number;
+  id: Id;
   center: Vec2D;
   size: Vec2D;
   vel: Vec2D;

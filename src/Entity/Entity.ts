@@ -3,7 +3,7 @@ import { FieldOfView } from './FOV';
 import { Light, Sound } from '../World';
 import { SolidAttachment } from '../Map';
 import { Particle } from '../Particle';
-import { IdGenerator, shortest_path } from '../Utils';
+import { Id, IdGenerator, shortest_path } from '../Utils';
 import { EntitySocketData } from '../Network';
 
 /**
@@ -92,7 +92,7 @@ interface CollisionTable {
  * Individual actors in the game world
  */
 abstract class Entity extends AABB {
-  id: number;
+  id: Id;
   align: EntityAlignment;
   vel: Vec2D;
   accel: Vec2D;
