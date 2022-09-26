@@ -37,9 +37,9 @@ interface ClientToServerEvents {
   stop: () => void;
 
   /**
-   * Handle user input event
+   * Handle buffered user input events
    */
-  input: (input: InputEvent) => void;
+  input: (input: InputEvent[]) => void;
 
   /**
    * Kick a player
