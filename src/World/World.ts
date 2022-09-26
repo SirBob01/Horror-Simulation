@@ -314,12 +314,12 @@ class World {
   /**
    * Get the information to be transmitted via socket
    */
-  get_socket_data(player_entity_id: Id) {
+  get_socket_data(player_entity_id: Id, seq: number) {
     const entities: EntitySocketData[] = [];
     this.entities.forEach((entity) => {
       entities.push(entity.get_socket_data());
     });
-    return { entities, player_entity_id } as GameStateSocketData;
+    return { seq, entities, player_entity_id } as GameStateSocketData;
   }
 }
 

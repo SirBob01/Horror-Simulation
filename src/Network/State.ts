@@ -1,11 +1,21 @@
+import { InputEvent } from '../Entity';
 import { WorldMapSocketData } from '../Map';
 import { Id } from '../Utils';
 import { EntitySocketData } from './Entity';
 
 /**
+ * Live input state information
+ */
+interface InputStateSocketData {
+  seq: number;
+  input: InputEvent[];
+}
+
+/**
  * Live game state information
  */
 interface GameStateSocketData {
+  seq: number;
   entities: EntitySocketData[];
   player_entity_id: Id;
 }
@@ -18,4 +28,4 @@ interface MapTransitionSocketData {
   target_spawn: string;
 }
 
-export type { GameStateSocketData, MapTransitionSocketData };
+export type { InputStateSocketData, GameStateSocketData, MapTransitionSocketData };
