@@ -1,4 +1,5 @@
 import { Vec2D } from 'dynamojs-engine';
+import { Light } from '../World';
 
 /**
  * Entity state information
@@ -14,12 +15,23 @@ interface BaseEntitySocketData {
 }
 
 /**
+ * Flashlight data
+ */
+interface FlashlightSocketData {
+  cone: Light;
+  core: Light;
+  battery: number;
+  on: boolean;
+}
+
+/**
  * Human specific data
  */
 interface HumanEntitySocketData extends BaseEntitySocketData {
   type: 'human';
   health: number;
   ammo: number;
+  flashlight: FlashlightSocketData;
 }
 
 /**

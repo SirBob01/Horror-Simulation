@@ -1,5 +1,4 @@
 import { WorldMapSocketData } from '../Map';
-import { Sound, Light } from '../World';
 import { EntitySocketData } from './Entity';
 
 /**
@@ -7,8 +6,6 @@ import { EntitySocketData } from './Entity';
  */
 interface GameStateSocketData {
   entities: EntitySocketData[];
-  sounds: Sound[];
-  lights: Light[];
   player_entity_id: number;
 }
 

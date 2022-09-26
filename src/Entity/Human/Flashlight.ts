@@ -5,14 +5,14 @@ import { Light } from '../../World';
  * A flashlight with a limited battery
  */
 class Flashlight {
-  private cone: Light;
-  private core: Light;
-  private battery: number;
+  cone: Light;
+  core: Light;
+  battery: number;
+  on: boolean;
   private max_battery: number;
   private flicker_time: number;
   private color: Color;
   private use_rate: number;
-  private on: boolean;
 
   constructor() {
     this.color = new Color(174, 169, 204);
@@ -39,13 +39,6 @@ class Flashlight {
    */
   get_core() {
     return this.core;
-  }
-
-  /**
-   * Test if the flashlight is on
-   */
-  is_on() {
-    return this.on;
   }
 
   /**

@@ -259,6 +259,12 @@ class Human extends Entity implements Controllable {
       alive: this.alive,
       health: this.health,
       ammo: this.ammo,
+      flashlight: {
+        core: this.flashlight.core,
+        cone: this.flashlight.cone,
+        on: this.flashlight.on,
+        battery: this.flashlight.battery,
+      },
     } as HumanEntitySocketData;
   }
 }

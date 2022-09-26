@@ -320,8 +320,6 @@ class World {
   get_socket_data(player_entity_id: number) {
     return {
       entities: this.entities.map((entity) => entity.get_socket_data()),
-      lights: this.lights,
-      sounds: this.sounds,
       player_entity_id,
     } as GameStateSocketData;
   }
