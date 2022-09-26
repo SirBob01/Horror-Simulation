@@ -285,15 +285,17 @@ class Human extends Entity implements Controllable {
     this.health = data.health;
     this.ammo = data.ammo;
 
-    this.flashlight.core.center.x = data.flashlight.cone.center.x;
-    this.flashlight.core.center.y = data.flashlight.cone.center.y;
-    this.flashlight.core.dir.x = data.flashlight.cone.dir.x;
-    this.flashlight.core.dir.y = data.flashlight.cone.dir.y;
+    this.flashlight.cone.center.x = data.flashlight.cone.center.x;
+    this.flashlight.cone.center.y = data.flashlight.cone.center.y;
+    this.flashlight.cone.dir.x = data.flashlight.cone.dir.x;
+    this.flashlight.cone.dir.y = data.flashlight.cone.dir.y;
+    this.flashlight.cone.half_angle = data.flashlight.cone.half_angle;
 
-    this.flashlight.core.center.x = data.flashlight.cone.center.x;
-    this.flashlight.core.center.y = data.flashlight.cone.center.y;
-    this.flashlight.core.dir.x = data.flashlight.cone.dir.x;
-    this.flashlight.core.dir.y = data.flashlight.cone.dir.y;
+    this.flashlight.core.center.x = data.flashlight.core.center.x;
+    this.flashlight.core.center.y = data.flashlight.core.center.y;
+    this.flashlight.core.dir.x = data.flashlight.core.dir.x;
+    this.flashlight.core.dir.y = data.flashlight.core.dir.y;
+    this.flashlight.core.half_angle = data.flashlight.core.half_angle;
 
     this.flashlight.battery = data.flashlight.battery;
     this.flashlight.on = data.flashlight.on;
