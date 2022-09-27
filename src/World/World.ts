@@ -186,12 +186,6 @@ class World {
       ent.collision.right = false;
       ent.collision.top = false;
       ent.collision.bottom = false;
-      if (ent.vel.x) {
-        ent.dir.x = Math.sign(ent.vel.x);
-      }
-      if (ent.vel.y) {
-        ent.dir.y = Math.sign(ent.vel.y);
-      }
 
       const substeps = 5;
       let tile_collision = false;
