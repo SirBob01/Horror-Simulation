@@ -203,6 +203,7 @@ class Human extends Entity implements Controllable {
     if (!this.can_shoot()) {
       return;
     }
+    this.callbacks.on_shoot();
     if (this.ammo > 0) {
       const dir = this.dir.unit();
       this.output.entities.push(
@@ -223,7 +224,6 @@ class Human extends Entity implements Controllable {
       });
     }
     this.shoot_timer = this.max_shoot_timer;
-    this.callbacks.on_shoot();
   }
 
   /**
