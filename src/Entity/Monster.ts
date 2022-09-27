@@ -83,9 +83,9 @@ class Monster extends Entity implements Controllable {
    * @param dt Delta time
    */
   update(dt: number) {
-    const accel = this.target_vel.sub(this.vel).scale(1 / 20);
-    this.vel.x = Math.min(this.vel.x + accel.x, this.max_speed);
-    this.vel.y = Math.min(this.vel.y + accel.y, this.max_speed);
+    this.accel = this.target_vel.sub(this.vel).scale(1 / 20);
+    this.vel.x = Math.min(this.vel.x, this.max_speed);
+    this.vel.y = Math.min(this.vel.y, this.max_speed);
   }
 
   /**
