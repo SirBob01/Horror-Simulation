@@ -88,12 +88,9 @@ class Flashlight {
     }
 
     // Offset the cone by a little bit
-    const dir_norm = this.user.dir.unit();
-    this.cone.center = this.user.center.add(new Vec2D(0, 3));
-    this.cone.dir = dir_norm;
-
     this.core.center = this.user.center.add(new Vec2D(0, 3));
-    this.core.dir = dir_norm;
+    this.cone.center = this.user.center.add(new Vec2D(0, 3));
+    this.cone.dir = this.user.dir.unit();
   }
 }
 
