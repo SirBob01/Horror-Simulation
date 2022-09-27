@@ -8,6 +8,21 @@ import { Controllable, InputEvent } from '../Controllable';
 import { HumanEntitySocketData } from '../../Network';
 
 /**
+ * Human callback methods
+ */
+interface HumanCallbacks {
+  /**
+   * Callback when the human reloads
+   */
+  on_reload(): void;
+
+  /**
+   * Callback when the human shoots
+   */
+  on_shoot(): void;
+}
+
+/**
  * Human character
  */
 class Human extends Entity implements Controllable {
@@ -31,6 +46,8 @@ class Human extends Entity implements Controllable {
   muzzle_timer: number;
 
   flashlight: Flashlight;
+
+  callbacks: HumanCallbacks;
 
   /**
    * Create a new human entity
@@ -67,6 +84,11 @@ class Human extends Entity implements Controllable {
     this.shoot_timer = 0;
 
     this.flashlight = new Flashlight(this);
+
+    this.callbacks = {
+      on_reload: () => {},
+      on_shoot: () => {},
+    };
   }
 
   /**
@@ -105,6 +127,9 @@ class Human extends Entity implements Controllable {
     }
     if (event.type === 'use3' && event.pressed) {
       this.flashlight.switch();
+    }
+    if (event.type === 'use2') {
+      this.reload();
     }
     if (event.type === 'attack') {
       this.shoot();
@@ -148,6 +173,7 @@ class Human extends Entity implements Controllable {
         this.ammo += bullet_count;
         this.reload_timer = 0;
         this.reloading = false;
+        this.callbacks.on_reload();
       }
     }
 
@@ -161,27 +187,6 @@ class Human extends Entity implements Controllable {
       this.muzzle_flash.center = this.center;
       this.output.lights.push(this.muzzle_flash);
     }
-  }
-
-  /**
-   * Get the ammo count of the human
-   */
-  get_ammo() {
-    return this.ammo;
-  }
-
-  /**
-   * Get the ammo count in the human's inventory
-   */
-  get_ammo_inventory() {
-    return this.ammo_inventory;
-  }
-
-  /**
-   * Test if human is reloading
-   */
-  is_reloading() {
-    return this.reloading;
   }
 
   /**
@@ -218,6 +223,7 @@ class Human extends Entity implements Controllable {
       });
     }
     this.shoot_timer = this.max_shoot_timer;
+    this.callbacks.on_shoot();
   }
 
   /**
