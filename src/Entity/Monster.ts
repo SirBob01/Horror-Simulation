@@ -10,6 +10,7 @@ import { Entity } from './Entity';
  * Monster entity
  */
 class Monster extends Entity implements Controllable {
+  target_vel: Vec2D;
   private walk_speed: number;
   private chase_speed: number;
   private max_speed: number;
@@ -25,6 +26,7 @@ class Monster extends Entity implements Controllable {
    */
   constructor(x: number, y: number) {
     super('hostile', x, y, 36, 72, 'Collider', 250, Math.PI / 4, 250);
+    this.target_vel = new Vec2D(0, 0);
 
     this.walk_speed = 0.08;
     this.chase_speed = 0.09;
@@ -43,84 +45,35 @@ class Monster extends Entity implements Controllable {
   handle_input(event: InputEvent) {
     if (event.type === 'left') {
       if (event.pressed) {
-        this.dir.x = -1;
-      } else if (this.dir.x < 0) {
-        this.dir.x = 0;
+        this.target_vel.x = -this.max_speed;
+      } else if (this.target_vel.x < 0) {
+        this.target_vel.x = 0;
       }
     }
     if (event.type === 'right') {
       if (event.pressed) {
-        this.dir.x = 1;
-      } else if (this.dir.x > 0) {
-        this.dir.x = 0;
+        this.target_vel.x = this.max_speed;
+      } else if (this.target_vel.x > 0) {
+        this.target_vel.x = 0;
       }
     }
     if (event.type === 'up') {
       if (event.pressed) {
-        this.dir.y = -1;
-      } else if (this.dir.y < 0) {
-        this.dir.y = 0;
+        this.target_vel.y = -this.max_speed;
+      } else if (this.target_vel.y < 0) {
+        this.target_vel.y = 0;
       }
     }
     if (event.type === 'down') {
       if (event.pressed) {
-        this.dir.y = 1;
-      } else if (this.dir.y > 0) {
-        this.dir.y = 0;
+        this.target_vel.y = this.max_speed;
+      } else if (this.target_vel.y > 0) {
+        this.target_vel.y = 0;
       }
     }
-  }
-
-  /**
-   * Follow the path specified by `current_path` member
-   */
-  private follow_path() {
-    // Semi-realistic steering thank god
-    if (this.current_path.length > 0) {
-      const collider = this.z_collider();
-      const next = this.current_path[0].scale(16).add(collider.dim.scale(0.5));
-
-      const dir = next.sub(collider.center);
-      const length = dir.length();
-
-      if (length > 10) {
-        const desired = dir.scale(this.max_speed / length);
-        const accel = desired.sub(this.vel).scale(1 / 20);
-        this.vel.x = Math.min(this.vel.x + accel.x, this.max_speed);
-        this.vel.y = Math.min(this.vel.y + accel.y, this.max_speed);
-        this.dir = dir;
-      } else {
-        this.current_path.shift();
-      }
-    } else {
-      this.vel.x = 0;
-      this.vel.y = 0;
-    }
-  }
-
-  /**
-   * Randomly visit a set of waypoints to patrol the area
-   *
-   * @param waypoints
-   */
-  private patrol(waypoints: Vec2D[]) {
-    const shuffle = (arr: any[]) => {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        const tmp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = tmp;
-      }
-    };
-    if (this.patrol_points.length === 0) {
-      this.patrol_points = waypoints.slice();
-      shuffle(this.patrol_points);
-    } else if (this.current_path.length === 0) {
-      // Wait a bit before going to next path
-      const first_waypoint = this.patrol_points.shift();
-      if (first_waypoint) {
-        this.generate_path(first_waypoint.scale(16).add(new Vec2D(8, 8)));
-      }
+    if (event.type === 'mouse') {
+      this.dir.x = event.position.x - this.center.x;
+      this.dir.y = event.position.y - this.center.y;
     }
   }
 
@@ -130,17 +83,9 @@ class Monster extends Entity implements Controllable {
    * @param dt Delta time
    */
   update(dt: number) {
-    // this.patrol(this.input.waypoints);
-    // this.follow_path();
-    if (this.dir.x || this.dir.y) {
-      const desired = this.dir.unit().scale(this.max_speed);
-      const accel = desired.sub(this.vel).scale(1 / 20);
-      this.vel.x = Math.min(this.vel.x + accel.x, this.max_speed);
-      this.vel.y = Math.min(this.vel.y + accel.y, this.max_speed);  
-    } else {
-      this.vel.x = 0;
-      this.vel.y = 0;
-    }
+    const accel = this.target_vel.sub(this.vel).scale(1 / 20);
+    this.vel.x = Math.min(this.vel.x + accel.x, this.max_speed);
+    this.vel.y = Math.min(this.vel.y + accel.y, this.max_speed);
   }
 
   /**
@@ -150,14 +95,14 @@ class Monster extends Entity implements Controllable {
    */
   interact_with(entity: Entity) {
     if (entity instanceof Bullet) {
-      const dir = entity.vel.unit();
+      const { center, dir } = entity;
       const angle = Math.atan2(dir.y, dir.x);
       for (let i = 0; i < 50; i++) {
         const d = randrange(-0.3, 0.3);
         this.output.particles.push(
           new Blood(
-            entity.center.x,
-            entity.center.y,
+            center.x,
+            center.y,
             Math.cos(angle + d),
             Math.sin(angle + d)
           )

@@ -1,5 +1,9 @@
 import { LobbySocketData, StartSocketData } from './Startup';
-import { GameStateSocketData, InputStateSocketData, MapTransitionSocketData } from './State';
+import {
+  GameStateSocketData,
+  InputStateSocketData,
+  MapTransitionSocketData,
+} from './State';
 
 /**
  * Client-to-server events

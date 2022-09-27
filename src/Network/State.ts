@@ -28,4 +28,8 @@ interface MapTransitionSocketData {
   target_spawn: string;
 }
 
-export type { InputStateSocketData, GameStateSocketData, MapTransitionSocketData };
+export type {
+  InputStateSocketData,
+  GameStateSocketData,
+  MapTransitionSocketData,
+};

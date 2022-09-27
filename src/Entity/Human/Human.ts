@@ -66,7 +66,7 @@ class Human extends Entity implements Controllable {
     this.max_shoot_timer = 500;
     this.shoot_timer = 0;
 
-    this.flashlight = new Flashlight();
+    this.flashlight = new Flashlight(this);
   }
 
   /**
@@ -75,9 +75,6 @@ class Human extends Entity implements Controllable {
    * @param event
    */
   handle_input(event: InputEvent): void {
-    // Flashlight cone determines the player's direction
-    const flashcone = this.flashlight.cone;
-
     if (event.type === 'left') {
       if (event.pressed) {
         this.vel.x = -this.speed;
@@ -110,13 +107,11 @@ class Human extends Entity implements Controllable {
       this.flashlight.switch();
     }
     if (event.type === 'attack') {
-      this.shoot(flashcone.dir);
+      this.shoot();
     }
     if (event.type === 'mouse') {
-      flashcone.dir = new Vec2D(
-        event.position.x - this.center.x,
-        event.position.y - this.center.y
-      );
+      this.dir.x = event.position.x - this.center.x;
+      this.dir.y = event.position.y - this.center.y;
     }
   }
 
@@ -157,7 +152,7 @@ class Human extends Entity implements Controllable {
     }
 
     // Update flashlight
-    this.flashlight.update(dt, this.center);
+    this.flashlight.update(dt);
     this.output.lights.push(this.flashlight.core, this.flashlight.cone);
 
     // Muzzle flash effect
@@ -198,14 +193,13 @@ class Human extends Entity implements Controllable {
 
   /**
    * Shoot the gun
-   *
-   * @param dir The direction of the shot
    */
-  shoot(dir: Vec2D) {
+  shoot() {
     if (!this.can_shoot()) {
       return;
     }
     if (this.ammo > 0) {
+      const dir = this.dir.unit();
       this.output.entities.push(
         new Bullet(this.center.x, this.center.y, dir.x, dir.y, this)
       );
@@ -257,8 +251,6 @@ class Human extends Entity implements Controllable {
       health: this.health,
       ammo: this.ammo,
       flashlight: {
-        core: this.flashlight.core,
-        cone: this.flashlight.cone,
         on: this.flashlight.on,
         battery: this.flashlight.battery,
       },
@@ -282,18 +274,6 @@ class Human extends Entity implements Controllable {
 
     this.health = data.health;
     this.ammo = data.ammo;
-
-    this.flashlight.cone.center.x = data.flashlight.cone.center.x;
-    this.flashlight.cone.center.y = data.flashlight.cone.center.y;
-    this.flashlight.cone.dir.x = data.flashlight.cone.dir.x;
-    this.flashlight.cone.dir.y = data.flashlight.cone.dir.y;
-    this.flashlight.cone.half_angle = data.flashlight.cone.half_angle;
-
-    this.flashlight.core.center.x = data.flashlight.core.center.x;
-    this.flashlight.core.center.y = data.flashlight.core.center.y;
-    this.flashlight.core.dir.x = data.flashlight.core.dir.x;
-    this.flashlight.core.dir.y = data.flashlight.core.dir.y;
-    this.flashlight.core.half_angle = data.flashlight.core.half_angle;
 
     this.flashlight.battery = data.flashlight.battery;
     this.flashlight.on = data.flashlight.on;

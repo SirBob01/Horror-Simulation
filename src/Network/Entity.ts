@@ -1,6 +1,5 @@
 import { Vec2D } from 'dynamojs-engine';
 import { Id } from '../Utils';
-import { Light } from '../World';
 
 /**
  * Entity state information
@@ -16,8 +15,6 @@ interface BaseEntitySocketData {
  * Flashlight data
  */
 interface FlashlightSocketData {
-  cone: Light;
-  core: Light;
   battery: number;
   on: boolean;
 }

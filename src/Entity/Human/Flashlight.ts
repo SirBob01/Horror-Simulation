@@ -1,5 +1,6 @@
 import { clamp, Color, Vec2D } from 'dynamojs-engine';
 import { Light } from '../../World';
+import { Entity } from '../Entity';
 
 /**
  * A flashlight with a limited battery
@@ -9,16 +10,18 @@ class Flashlight {
   core: Light;
   battery: number;
   on: boolean;
+  user: Entity;
   private max_battery: number;
   private flicker_time: number;
   private color: Color;
   private use_rate: number;
 
-  constructor() {
+  constructor(user: Entity) {
     this.color = new Color(174, 169, 204);
     this.cone = new Light(0, 0, 150, this.color, new Vec2D(1, 0), Math.PI / 6);
     this.core = new Light(0, 0, 50, this.color, new Vec2D(1, 0), Math.PI);
     this.on = true;
+    this.user = user;
 
     this.max_battery = 100;
     this.battery = this.max_battery;
@@ -41,7 +44,7 @@ class Flashlight {
    * @param dt      Delta time
    * @param position Position of the source
    */
-  update(dt: number, position: Vec2D) {
+  update(dt: number) {
     if (this.on) {
       // Update flashlight brightness
       // This is clipped to 50% (so it still remains visible), but the battery will still drain
@@ -85,8 +88,12 @@ class Flashlight {
     }
 
     // Offset the cone by a little bit
-    this.cone.center = position.add(new Vec2D(0, 3));
-    this.core.center = position.add(new Vec2D(0, 3));
+    const dir_norm = this.user.dir.unit();
+    this.cone.center = this.user.center.add(new Vec2D(0, 3));
+    this.cone.dir = dir_norm;
+
+    this.core.center = this.user.center.add(new Vec2D(0, 3));
+    this.core.dir = dir_norm;
   }
 }
 

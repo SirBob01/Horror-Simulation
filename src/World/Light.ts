@@ -28,8 +28,8 @@ class Light extends AABB {
    * @param x           World x-coordinate
    * @param y           World y-coordinate
    * @param radius      Radius
-   * @param color        Emission color
-   * @param dir          Direction (for directed lights)
+   * @param color       Emission color
+   * @param dir         Direction (for directed lights)
    * @param half_angle  Cone half-angle
    */
   constructor(

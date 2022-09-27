@@ -19,9 +19,8 @@ class Bullet extends Entity {
    */
   constructor(x: number, y: number, dx: number, dy: number, source: Entity) {
     super('friendly', x, y, 5, 5, 'Blocker');
-    const bullet_speed = 2;
-    this.vel.x = dx * bullet_speed;
-    this.vel.y = dy * bullet_speed;
+    this.dir.x = dx;
+    this.dir.y = dy;
     this.source_id = source.id;
   }
 
@@ -30,6 +29,16 @@ class Bullet extends Entity {
    */
   on_collide() {
     this.kill();
+  }
+
+  /**
+   * Update velocity based on current direction
+   *
+   * @param dt Delta time
+   */
+  update(dt: number) {
+    const bullet_speed = 2;
+    this.vel = this.dir.scale(bullet_speed);
   }
 
   /**
