@@ -12,8 +12,8 @@ import { EntitySocketData, GameStateSocketData } from '../Network';
  */
 type WorldExitHandler = (
   entity: Entity,
-  target_map: string,
-  target_spawn: string
+  targetMap: string,
+  targetSpawn: string
 ) => void;
 
 /**
@@ -23,10 +23,10 @@ class World {
   map: WorldMap;
   entities: Map<Id, Entity>;
   particles: Particle[];
-  map_lights: Light[];
+  mapLights: Light[];
   lights: Light[];
   sounds: Sound[];
-  on_exit: WorldExitHandler;
+  onExit: WorldExitHandler;
 
   /**
    * Create a new world
@@ -35,7 +35,7 @@ class World {
    * @param monster
    * @param map
    */
-  constructor(map: WorldMap, on_exit: WorldExitHandler) {
+  constructor(map: WorldMap, onExit: WorldExitHandler) {
     this.map = map;
 
     // Objects
@@ -43,21 +43,21 @@ class World {
     this.particles = []; // Non-interactive entities used for visual effects
 
     // World data for sensors
-    this.map_lights = this.map.get_lights();
+    this.mapLights = this.map.getLights();
     this.lights = [];
     this.sounds = [];
-    this.on_exit = on_exit;
+    this.onExit = onExit;
   }
 
   /**
    * Test if a bounding volume is colliding with a named entity
    *
-   * @param bounds     Bounding volume
-   * @param name       Entity name
-   * @param solid_tile Type of tile that blocks this entity
+   * @param bounds    Bounding volume
+   * @param name      Entity name
+   * @param solidTile Type of tile that blocks this entity
    */
-  private is_colliding(entity: Entity) {
-    const bounds = entity.z_collider();
+  private isColliding(entity: Entity) {
+    const bounds = entity.zCollider();
     const left = clamp(
       Math.floor((bounds.center.x - bounds.dim.x / 2.0) / this.map.tilesize.x),
       0,
@@ -83,23 +83,23 @@ class World {
       for (let y = top; y <= bottom; y++) {
         if (entity instanceof Human || entity instanceof Monster) {
           // Hit collider for exit
-          const exits = this.map.get_attachments(x, y, 'Background', 'Exit');
+          const exits = this.map.getAttachments(x, y, 'Background', 'Exit');
           for (const exit of exits) {
-            if (exit.rect.is_colliding(bounds)) {
-              this.on_exit(entity, exit.target_map, exit.target_spawn_id);
+            if (exit.rect.isColliding(bounds)) {
+              this.onExit(entity, exit.targetMap, exit.targetSpawnId);
             }
           }
         }
 
         for (const layer of MapLayers) {
-          const colliders = this.map.get_attachments(
+          const colliders = this.map.getAttachments(
             x,
             y,
             layer,
-            entity.solid_tile
+            entity.solidTile
           );
           for (const collider of colliders) {
-            if (collider.rect.is_colliding(bounds)) {
+            if (collider.rect.isColliding(bounds)) {
               return true;
             }
           }
@@ -114,7 +114,7 @@ class World {
    *
    * @param dt Delta time
    */
-  private update_entities(dt: number) {
+  private updateEntities(dt: number) {
     const qt = new Quadtree(
       3,
       this.map.size.x * this.map.tilesize.x,
@@ -129,8 +129,8 @@ class World {
       // Set the input data based on the FOV sensors
       for (const light of this.lights) {
         if (
-          ent.visual_fov &&
-          ent.visual_fov.is_visible(
+          ent.visualFov &&
+          ent.visualFov.isVisible(
             light.center,
             this.map.wallmesh,
             this.map.tilesize
@@ -141,7 +141,7 @@ class World {
       }
       for (const sound of this.sounds) {
         if (
-          ent.hearing_fov.is_visible(
+          ent.hearingFov.isVisible(
             sound.position,
             this.map.wallmesh,
             this.map.tilesize
@@ -150,10 +150,10 @@ class World {
           ent.input.sounds.push(sound);
         }
       }
-      for (const target of qt.get_neighbors(ent.visual_fov)) {
+      for (const target of qt.getNeighbors(ent.visualFov)) {
         if (ent === target) continue;
         if (
-          ent.visual_fov.is_visible(
+          ent.visualFov.isVisible(
             target.center,
             this.map.wallmesh,
             this.map.tilesize
@@ -162,10 +162,10 @@ class World {
           ent.input.entities.push(target as Entity);
         }
       }
-      for (const target of qt.get_neighbors(ent)) {
+      for (const target of qt.getNeighbors(ent)) {
         if (ent === target) continue;
-        if (ent.is_colliding(target)) {
-          ent.interact_with(target as Entity);
+        if (ent.isColliding(target)) {
+          ent.interactWith(target as Entity);
         }
       }
       ent.input.navmesh = this.map.navmesh;
@@ -188,43 +188,43 @@ class World {
       ent.collision.bottom = false;
 
       const substeps = 5;
-      let tile_collision = false;
+      let tileCollision = false;
       for (let n = 0; n < substeps; n++) {
-        const old_pos = ent.center.copy();
+        const oldPos = ent.center.copy();
 
         ent.center.x += step.x / substeps;
-        if (this.is_colliding(ent)) {
-          tile_collision = true;
+        if (this.isColliding(ent)) {
+          tileCollision = true;
           if (ent.vel.x < 0) {
             ent.collision.left = true;
           } else if (ent.vel.x > 0) {
             ent.collision.right = true;
           }
-          ent.center.x = old_pos.x;
+          ent.center.x = oldPos.x;
         }
 
         ent.center.y += step.y / substeps;
-        if (this.is_colliding(ent)) {
-          tile_collision = true;
+        if (this.isColliding(ent)) {
+          tileCollision = true;
           if (ent.vel.y < 0) {
             ent.collision.top = true;
           } else if (ent.vel.y > 0) {
             ent.collision.bottom = true;
           }
-          ent.center.y = old_pos.y;
+          ent.center.y = oldPos.y;
         }
       }
-      if (tile_collision) {
-        ent.on_collide();
+      if (tileCollision) {
+        ent.onCollide();
       }
     });
 
     // Register all entity output for next update step
-    this.lights = [...this.map_lights];
+    this.lights = [...this.mapLights];
     this.sounds = [];
     this.entities.forEach((ent) => {
       ent.output.entities.forEach((ent2) => {
-        this.add_entity(ent2);
+        this.addEntity(ent2);
       });
       this.lights.push(...ent.output.lights);
       this.sounds.push(...ent.output.sounds);
@@ -255,7 +255,7 @@ class World {
    *
    * @param dt Delta time
    */
-  private update_particles(dt: number) {
+  private updateParticles(dt: number) {
     // Update particles
     for (const particle of this.particles) {
       particle.update(dt);
@@ -283,8 +283,8 @@ class World {
    * @param dt Delta time
    */
   update(dt: number) {
-    this.update_entities(dt);
-    this.update_particles(dt);
+    this.updateEntities(dt);
+    this.updateParticles(dt);
   }
 
   /**
@@ -292,7 +292,7 @@ class World {
    *
    * @param entity
    */
-  remove_entity(entity: Entity) {
+  removeEntity(entity: Entity) {
     this.entities.delete(entity.id);
   }
 
@@ -301,19 +301,22 @@ class World {
    *
    * @param entity
    */
-  add_entity(entity: Entity) {
+  addEntity(entity: Entity) {
     this.entities.set(entity.id, entity);
   }
 
   /**
    * Get the information to be transmitted via socket
+   *
+   * @param playerEntityId
+   * @param seq
    */
-  get_socket_data(player_entity_id: Id, seq: number) {
+  getSocketData(playerEntityId: Id, seq: number) {
     const entities: EntitySocketData[] = [];
     this.entities.forEach((entity) => {
-      entities.push(entity.get_socket_data());
+      entities.push(entity.getSocketData());
     });
-    return { seq, entities, player_entity_id } as GameStateSocketData;
+    return { seq, entities, playerEntityId } as GameStateSocketData;
   }
 }
 

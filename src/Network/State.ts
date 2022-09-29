@@ -17,15 +17,15 @@ interface InputStateSocketData {
 interface GameStateSocketData {
   seq: number;
   entities: EntitySocketData[];
-  player_entity_id: Id;
+  playerEntityId: Id;
 }
 
 /**
  * Map transitioning information
  */
 interface MapTransitionSocketData {
-  map_data: WorldMapSocketData;
-  target_spawn: string;
+  mapData: WorldMapSocketData;
+  targetSpawn: string;
 }
 
 export type {

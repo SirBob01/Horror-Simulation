@@ -3,7 +3,7 @@ import { FieldOfView } from './FOV';
 import { Light, Sound } from '../World';
 import { SolidAttachment } from '../Map';
 import { Particle } from '../Particle';
-import { Id, IdGenerator, shortest_path } from '../Utils';
+import { Id, IdGenerator, shortestPath } from '../Utils';
 import { EntitySocketData } from '../Network';
 
 /**
@@ -98,12 +98,12 @@ abstract class Entity extends AABB {
   accel: Vec2D;
   dir: Vec2D;
   collision: CollisionTable;
-  hearing_fov: FieldOfView;
-  visual_fov: FieldOfView;
-  current_path: Vec2D[];
+  hearingFov: FieldOfView;
+  visualFov: FieldOfView;
+  currentPath: Vec2D[];
   input: EntityInput;
   output: EntityOutput;
-  solid_tile: SolidAttachment['type'];
+  solidTile: SolidAttachment['type'];
   alive: boolean;
 
   /**
@@ -114,10 +114,10 @@ abstract class Entity extends AABB {
    * @param y            World y-cooridnate
    * @param w            World width dimension
    * @param h            World height dimension
-   * @param solid_tile   Type of tile that blocks this entity from moving
-   * @param hearing_dist Hearing distance (audio sensor)
-   * @param view_angle   Field of view    (visual sensor)
-   * @param view_range   Range of view    (visual sensor)
+   * @param solidTile   Type of tile that blocks this entity from moving
+   * @param hearingDist Hearing distance (audio sensor)
+   * @param viewAngle   Field of view    (visual sensor)
+   * @param viewRange   Range of view    (visual sensor)
    */
   constructor(
     align: EntityAlignment,
@@ -125,15 +125,15 @@ abstract class Entity extends AABB {
     y: number,
     w: number,
     h: number,
-    solid_tile: SolidAttachment['type'],
-    hearing_dist = 0,
-    view_angle = 0,
-    view_range = 0
+    solidTile: SolidAttachment['type'],
+    hearingDist = 0,
+    viewAngle = 0,
+    viewRange = 0
   ) {
     super(x, y, w, h);
     this.id = IdGenerator.generate();
     this.align = align;
-    this.solid_tile = solid_tile;
+    this.solidTile = solidTile;
 
     this.vel = new Vec2D(0, 0);
     this.accel = new Vec2D(0, 0);
@@ -156,16 +156,16 @@ abstract class Entity extends AABB {
     // Visual FOV depends on heading vector (where is the character moving towards?)
     // Can also rotate (looking around)
     // Must be visualized somehow
-    this.hearing_fov = new FieldOfView(
+    this.hearingFov = new FieldOfView(
       this.center,
-      hearing_dist,
+      hearingDist,
       Math.PI,
       new Vec2D(1, 0)
     );
-    this.visual_fov = new FieldOfView(
+    this.visualFov = new FieldOfView(
       this.center,
-      view_range,
-      view_angle,
+      viewRange,
+      viewAngle,
       new Vec2D(1, 0)
     );
 
@@ -177,14 +177,14 @@ abstract class Entity extends AABB {
       waypoints: [],
       tilesize: new Vec2D(1, 1),
     };
-    this.current_path = [];
+    this.currentPath = [];
   }
 
   /**
    * Get the world collider of the entity
    * The sprite's bounding volume will be slightly above his feet to simulate 3D
    */
-  z_collider() {
+  zCollider() {
     return new AABB(this.center.x, this.center.y + this.dim.y / 3.0, 16, 16);
   }
 
@@ -198,50 +198,46 @@ abstract class Entity extends AABB {
   /**
    * Find the shortest path to a target world position
    *
-   * This updates the internal `current_path` variable, which is an
+   * This updates the internal `currentPath` variable, which is an
    * array of discrete positions to travel to
    *
    * @param target
    */
-  generate_path(target: Vec2D) {
-    const collider = this.z_collider();
-    let from_unit = collider.center.copy();
-    from_unit.x = Math.floor(from_unit.x / this.input.tilesize.x);
-    from_unit.y = Math.floor(from_unit.y / this.input.tilesize.x);
+  generatePath(target: Vec2D) {
+    const collider = this.zCollider();
+    let fromUnit = collider.center.copy();
+    fromUnit.x = Math.floor(fromUnit.x / this.input.tilesize.x);
+    fromUnit.y = Math.floor(fromUnit.y / this.input.tilesize.x);
 
-    let target_unit = target.copy();
-    target_unit.x = Math.floor(target_unit.x / this.input.tilesize.x);
-    target_unit.y = Math.floor(target_unit.y / this.input.tilesize.x);
+    let targetUnit = target.copy();
+    targetUnit.x = Math.floor(targetUnit.x / this.input.tilesize.x);
+    targetUnit.y = Math.floor(targetUnit.y / this.input.tilesize.x);
 
-    const adj_list = [
+    const adjList = [
       new Vec2D(1, 0),
       new Vec2D(-1, 0),
       new Vec2D(0, -1),
       new Vec2D(0, 1),
     ];
-    if (this.input.navmesh[from_unit.y][from_unit.x] !== 0) {
-      for (const offset of adj_list) {
-        const adj = from_unit.add(offset);
+    if (this.input.navmesh[fromUnit.y][fromUnit.x] !== 0) {
+      for (const offset of adjList) {
+        const adj = fromUnit.add(offset);
         if (this.input.navmesh[adj.y][adj.x] === 0) {
-          from_unit = adj;
+          fromUnit = adj;
           break;
         }
       }
     }
-    if (this.input.navmesh[target_unit.y][target_unit.x] !== 0) {
-      for (const offset of adj_list) {
-        const adj = target_unit.add(offset);
+    if (this.input.navmesh[targetUnit.y][targetUnit.x] !== 0) {
+      for (const offset of adjList) {
+        const adj = targetUnit.add(offset);
         if (this.input.navmesh[adj.y][adj.x] === 0) {
-          target_unit = adj;
+          targetUnit = adj;
           break;
         }
       }
     }
-    this.current_path = shortest_path(
-      this.input.navmesh,
-      from_unit,
-      target_unit
-    );
+    this.currentPath = shortestPath(this.input.navmesh, fromUnit, targetUnit);
   }
 
   /**
@@ -249,14 +245,14 @@ abstract class Entity extends AABB {
    *
    * @param target Other entity
    */
-  interact_with(target: Entity) {
+  interactWith(target: Entity) {
     return;
   }
 
   /**
    * Handle colliding with the map
    */
-  on_collide() {
+  onCollide() {
     return;
   }
 
@@ -274,12 +270,12 @@ abstract class Entity extends AABB {
   /**
    * Get the data required for socket transmission
    */
-  abstract get_socket_data(): EntitySocketData;
+  abstract getSocketData(): EntitySocketData;
 
   /**
    * Update the entity given transmitted socket data
    */
-  abstract set_socket_data(data: EntitySocketData): void;
+  abstract setSocketData(data: EntitySocketData): void;
 }
 
 export { Entity };

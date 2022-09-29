@@ -11,10 +11,10 @@ class Flashlight {
   battery: number;
   on: boolean;
   user: Entity;
-  private max_battery: number;
-  private flicker_time: number;
+  private maxBattery: number;
+  private flickerTime: number;
   private color: Color;
-  private use_rate: number;
+  private useRate: number;
 
   constructor(user: Entity) {
     this.color = new Color(174, 169, 204);
@@ -23,11 +23,11 @@ class Flashlight {
     this.on = true;
     this.user = user;
 
-    this.max_battery = 100;
-    this.battery = this.max_battery;
-    this.use_rate = 0.001;
+    this.maxBattery = 100;
+    this.battery = this.maxBattery;
+    this.useRate = 0.001;
 
-    this.flicker_time = 0;
+    this.flickerTime = 0;
   }
 
   /**
@@ -41,7 +41,7 @@ class Flashlight {
    * Slowly dim the light as the battery reduces over time
    * As soon as the light hits certain thresholds, it will start flickering
    *
-   * @param dt      Delta time
+   * @param dt       Delta time
    * @param position Position of the source
    */
   update(dt: number) {
@@ -52,32 +52,32 @@ class Flashlight {
       this.cone.on = true;
 
       this.battery = clamp(
-        this.battery - dt * this.use_rate,
+        this.battery - dt * this.useRate,
         0,
-        this.max_battery
+        this.maxBattery
       );
 
       let t = 1.0;
       if (this.battery <= 0) {
         this.battery = 0;
       } else {
-        t = clamp((this.max_battery - this.battery) / this.max_battery, 0, 0.5);
+        t = clamp((this.maxBattery - this.battery) / this.maxBattery, 0, 0.5);
       }
       this.cone.color = this.color.lerp(new Color(0, 0, 0, 0), t);
       this.core.color = this.color.lerp(new Color(0, 0, 0, 0), t);
 
       // Start flickering when the battery is at around 30% capacity
       // This signals the player to start collecting batteries or to recharge
-      if (this.battery < this.max_battery / 3) {
-        if (this.flicker_time === 0 && Math.random() < 0.1) {
-          this.flicker_time = clamp(Math.random() * 0.3, 0.15, 0.3);
+      if (this.battery < this.maxBattery / 3) {
+        if (this.flickerTime === 0 && Math.random() < 0.1) {
+          this.flickerTime = clamp(Math.random() * 0.3, 0.15, 0.3);
           this.cone.on = false;
           this.core.on = false;
         }
-        if (this.flicker_time > 0) {
-          this.flicker_time -= dt;
+        if (this.flickerTime > 0) {
+          this.flickerTime -= dt;
         } else {
-          this.flicker_time = 0;
+          this.flickerTime = 0;
           this.cone.on = true;
           this.core.on = true;
         }

@@ -5,7 +5,7 @@ import { AABB, Vec2D } from 'dynamojs-engine';
  */
 class FieldOfView extends AABB {
   private radius: number;
-  private half_angle: number;
+  private halfAngle: number;
   private dir: Vec2D;
 
   /**
@@ -13,13 +13,13 @@ class FieldOfView extends AABB {
    *
    * @param position    Position of entity
    * @param radius     Maximum distance
-   * @param half_angle Field of view angle
+   * @param halfAngle Field of view angle
    * @param dir         Look direction
    */
-  constructor(position: Vec2D, radius: number, half_angle: number, dir: Vec2D) {
+  constructor(position: Vec2D, radius: number, halfAngle: number, dir: Vec2D) {
     super(position.x, position.y, radius * 2, radius * 2);
     this.radius = radius;
-    this.half_angle = half_angle;
+    this.halfAngle = halfAngle;
     this.dir = dir;
   }
 
@@ -28,9 +28,9 @@ class FieldOfView extends AABB {
    *
    * @param target Target position
    */
-  private in_range(target: Vec2D) {
-    const length_sq = this.center.sub(target).length_sq();
-    return length_sq <= Math.pow(this.radius, 2);
+  private inRange(target: Vec2D) {
+    const lengthSq = this.center.sub(target).lengthSq();
+    return lengthSq <= Math.pow(this.radius, 2);
   }
 
   /**
@@ -38,21 +38,21 @@ class FieldOfView extends AABB {
    *
    * @param target Target position
    */
-  private in_cone(target: Vec2D) {
-    const base_angle = Math.atan2(this.dir.y, this.dir.x);
-    const arc_start = base_angle - this.half_angle;
-    const arc_stop = base_angle + this.half_angle;
+  private inCone(target: Vec2D) {
+    const baseAngle = Math.atan2(this.dir.y, this.dir.x);
+    const arcStart = baseAngle - this.halfAngle;
+    const arcStop = baseAngle + this.halfAngle;
 
     const distance = target.sub(this.center);
     const angle = Math.atan2(distance.y, distance.x);
 
-    if (arc_stop > Math.PI) {
-      if (angle >= arc_stop - 2 * Math.PI && angle <= arc_start) {
+    if (arcStop > Math.PI) {
+      if (angle >= arcStop - 2 * Math.PI && angle <= arcStart) {
         return false;
       }
-    } else if (arc_start < -Math.PI) {
-      if (angle <= arc_start + 2 * Math.PI && angle >= arc_stop) return false;
-    } else if (angle <= arc_start || angle >= arc_stop) {
+    } else if (arcStart < -Math.PI) {
+      if (angle <= arcStart + 2 * Math.PI && angle >= arcStop) return false;
+    } else if (angle <= arcStart || angle >= arcStop) {
       return false;
     }
     return true;
@@ -65,38 +65,38 @@ class FieldOfView extends AABB {
    * @param map Occlusion map
    * @param tilesize Tile dimensions
    */
-  private is_occluded(target: Vec2D, map: number[][], tilesize: Vec2D) {
+  private isOccluded(target: Vec2D, map: number[][], tilesize: Vec2D) {
     // Bresenham's algorithm
-    const target_unit = target.copy();
-    target_unit.x = Math.floor(target_unit.x / tilesize.x);
-    target_unit.y = Math.floor(target_unit.y / tilesize.y);
+    const targetUnit = target.copy();
+    targetUnit.x = Math.floor(targetUnit.x / tilesize.x);
+    targetUnit.y = Math.floor(targetUnit.y / tilesize.y);
 
-    const from_unit = this.center.copy();
-    from_unit.x = Math.floor(from_unit.x / tilesize.x);
-    from_unit.y = Math.floor(from_unit.y / tilesize.y);
+    const fromUnit = this.center.copy();
+    fromUnit.x = Math.floor(fromUnit.x / tilesize.x);
+    fromUnit.y = Math.floor(fromUnit.y / tilesize.y);
 
-    const dx = Math.abs(target_unit.x - from_unit.x);
-    const sx = from_unit.x < target_unit.x ? 1 : -1;
-    const dy = -Math.abs(target_unit.y - from_unit.y);
-    const sy = from_unit.y < target_unit.y ? 1 : -1;
+    const dx = Math.abs(targetUnit.x - fromUnit.x);
+    const sx = fromUnit.x < targetUnit.x ? 1 : -1;
+    const dy = -Math.abs(targetUnit.y - fromUnit.y);
+    const sy = fromUnit.y < targetUnit.y ? 1 : -1;
     let err = dx + dy;
 
     // NOTE: Farthest possible distance will be about 10000 tiles
     for (let n = 10000; n > 0; n--) {
-      if (map[from_unit.y][from_unit.x] === 1) {
+      if (map[fromUnit.y][fromUnit.x] === 1) {
         return true;
       }
-      if (target_unit.equals(from_unit)) {
+      if (targetUnit.equals(fromUnit)) {
         break;
       }
       const e2 = 2 * err;
       if (e2 >= dy) {
         err += dy;
-        from_unit.x += sx;
+        fromUnit.x += sx;
       }
       if (e2 <= dx) {
         err += dx;
-        from_unit.y += sy;
+        fromUnit.y += sy;
       }
     }
     return false;
@@ -109,14 +109,14 @@ class FieldOfView extends AABB {
    * @param map Occlusion map
    * @param tilesize Tile dimensions
    */
-  is_visible(target: Vec2D, map: number[][], tilesize: Vec2D) {
-    if (!this.in_range(target)) {
+  isVisible(target: Vec2D, map: number[][], tilesize: Vec2D) {
+    if (!this.inRange(target)) {
       return false;
     }
-    if (!this.in_cone(target)) {
+    if (!this.inCone(target)) {
       return false;
     }
-    if (this.is_occluded(target, map, tilesize)) {
+    if (this.isOccluded(target, map, tilesize)) {
       return false;
     }
     return true;

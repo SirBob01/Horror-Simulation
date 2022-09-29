@@ -100,7 +100,7 @@ function heuristic(a: Vec2D, b: Vec2D) {
  *
  * @param p Point
  */
-function get_neighbors(p: Vec2D) {
+function getNeighbors(p: Vec2D) {
   return [
     new Vec2D(p.x - 1, p.y),
     new Vec2D(p.x + 1, p.y),
@@ -120,11 +120,11 @@ function get_neighbors(p: Vec2D) {
  * @param {Map<string, string>} from
  * @param last
  */
-function reconstruct_path(from: Map<string, string>, last: string) {
+function reconstructPath(from: Map<string, string>, last: string) {
   const path = [];
   let current: string | undefined = last;
   while (current) {
-    path.unshift(Vec2D.from_string(current));
+    path.unshift(Vec2D.fromString(current));
     current = from.get(current);
   }
   return path;
@@ -136,7 +136,7 @@ function reconstruct_path(from: Map<string, string>, last: string) {
  * @param navmesh
  * @param node
  */
-function in_bounds(navmesh: number[][], node: Vec2D) {
+function inBounds(navmesh: number[][], node: Vec2D) {
   if (
     node.x < 0 ||
     node.x >= navmesh[0].length ||
@@ -152,31 +152,27 @@ function in_bounds(navmesh: number[][], node: Vec2D) {
  * Implementation of the A* algorithm
  *
  * @param navmesh
- * @param start_node
- * @param goal_node
+ * @param startNode
+ * @param goalNode
  */
-function shortest_path(
-  navmesh: number[][],
-  start_node: Vec2D,
-  goal_node: Vec2D
-) {
+function shortestPath(navmesh: number[][], startNode: Vec2D, goalNode: Vec2D) {
   // Round off the values
-  const start = new Vec2D(Math.round(start_node.x), Math.round(start_node.y));
-  const goal = new Vec2D(Math.round(goal_node.x), Math.round(goal_node.y));
-  const g_scores = new Map<string, number>();
-  const f_scores = new Map<string, number>();
+  const start = new Vec2D(Math.round(startNode.x), Math.round(startNode.y));
+  const goal = new Vec2D(Math.round(goalNode.x), Math.round(goalNode.y));
+  const gScores = new Map<string, number>();
+  const fScores = new Map<string, number>();
 
-  g_scores.set(start.to_string(), 0);
-  f_scores.set(start.to_string(), heuristic(start, goal));
+  gScores.set(start.toString(), 0);
+  fScores.set(start.toString(), heuristic(start, goal));
 
   const from = new Map<string, string>();
   const explore = new Heap<Vec2D>((a, b) => {
-    const a_f = f_scores.get(a.to_string());
-    const b_f = f_scores.get(b.to_string());
-    if (a_f === undefined || b_f === undefined) {
+    const aF = fScores.get(a.toString());
+    const bF = fScores.get(b.toString());
+    if (aF === undefined || bF === undefined) {
       return false;
     }
-    return a_f < b_f;
+    return aF < bF;
   });
   explore.insert(start);
 
@@ -187,20 +183,20 @@ function shortest_path(
       continue;
     }
 
-    const current_str = current.to_string();
-    const g = g_scores.get(current.to_string());
+    const currentStr = current.toString();
+    const g = gScores.get(current.toString());
     if (g === undefined) {
       continue;
     }
 
     // Goal test
     if (current.equals(goal)) {
-      return reconstruct_path(from, current_str);
+      return reconstructPath(from, currentStr);
     }
 
     // Expand children
-    for (const adj of get_neighbors(current)) {
-      if (!in_bounds(navmesh, adj)) {
+    for (const adj of getNeighbors(current)) {
+      if (!inBounds(navmesh, adj)) {
         continue;
       }
       if (navmesh[adj.y][adj.x]) {
@@ -208,13 +204,13 @@ function shortest_path(
       }
 
       // Update costs
-      const adj_str = adj.to_string();
-      const new_adj_g = g + heuristic(current, adj);
-      const old_adj_g = g_scores.get(adj_str);
-      if (old_adj_g === undefined || new_adj_g < old_adj_g) {
-        from.set(adj_str, current_str);
-        g_scores.set(adj_str, new_adj_g);
-        f_scores.set(adj_str, new_adj_g + heuristic(adj, goal));
+      const adjStr = adj.toString();
+      const newAdjG = g + heuristic(current, adj);
+      const oldAdjG = gScores.get(adjStr);
+      if (oldAdjG === undefined || newAdjG < oldAdjG) {
+        from.set(adjStr, currentStr);
+        gScores.set(adjStr, newAdjG);
+        fScores.set(adjStr, newAdjG + heuristic(adj, goal));
 
         // Add node to the open set
         const match = explore.find((val) => val.equals(adj));
@@ -227,4 +223,4 @@ function shortest_path(
   return [];
 }
 
-export { shortest_path };
+export { shortestPath };

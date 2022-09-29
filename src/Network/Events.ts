@@ -72,7 +72,7 @@ interface ServerToClientEvents {
   /**
    * Handle transitioning between maps
    */
-  map_transition: (data: MapTransitionSocketData) => void;
+  mapTransition: (data: MapTransitionSocketData) => void;
 
   /**
    * Kick a player

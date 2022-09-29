@@ -41,7 +41,7 @@ interface MonsterEntitySocketData extends BaseEntitySocketData {
  */
 interface BulletEntitySocketData extends BaseEntitySocketData {
   type: 'bullet';
-  source_id: number;
+  sourceId: number;
 }
 
 /**

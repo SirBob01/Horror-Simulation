@@ -18,7 +18,7 @@ interface GeometricSide {
  */
 class Light extends AABB {
   color: Color;
-  half_angle: number;
+  halfAngle: number;
   dir: Vec2D;
   on: boolean;
 
@@ -30,7 +30,7 @@ class Light extends AABB {
    * @param radius      Radius
    * @param color       Emission color
    * @param dir         Direction (for directed lights)
-   * @param half_angle  Cone half-angle
+   * @param halfAngle  Cone half-angle
    */
   constructor(
     x: number,
@@ -38,13 +38,13 @@ class Light extends AABB {
     radius: number,
     color: Color,
     dir: Vec2D,
-    half_angle: number
+    halfAngle: number
   ) {
     super(x, y, radius * 2, radius * 2);
     this.color = color;
 
-    // NEVER make abs(half_angle) >= Math.PI/2
-    this.half_angle = half_angle;
+    // NEVER make abs(halfAngle) >= Math.PI/2
+    this.halfAngle = halfAngle;
     this.dir = dir;
 
     this.on = true;
@@ -56,29 +56,29 @@ class Light extends AABB {
    * @param ray
    * @param segment
    */
-  private get_intersection(ray: Segment, segment: Segment) {
-    const r_p = ray.start.copy();
-    const r_d = ray.stop.sub(ray.start);
+  private getIntersection(ray: Segment, segment: Segment) {
+    const rP = ray.start.copy();
+    const rD = ray.stop.sub(ray.start);
 
-    const s_p = segment.start.copy();
-    const s_d = segment.stop.sub(segment.start);
+    const sP = segment.start.copy();
+    const sD = segment.stop.sub(segment.start);
 
-    if (r_d.unit().equals(s_d.unit())) {
+    if (rD.unit().equals(sD.unit())) {
       // When parallel, no intersection
       return null;
     }
 
     const T2 =
-      (r_d.x * (s_p.y - r_p.y) + r_d.y * (r_p.x - s_p.x)) /
-      (s_d.x * r_d.y - s_d.y * r_d.x);
-    const T1 = (s_p.x + s_d.x * T2 - r_p.x) / r_d.x;
+      (rD.x * (sP.y - rP.y) + rD.y * (rP.x - sP.x)) /
+      (sD.x * rD.y - sD.y * rD.x);
+    const T1 = (sP.x + sD.x * T2 - rP.x) / rD.x;
     if (T1 < 0 || T2 < 0 || T2 > 1) {
       return null;
     }
 
     // Point of intersection and parametric parameter
     return {
-      point: new Vec2D(r_p.x + r_d.x * T1, r_p.y + r_d.y * T1),
+      point: new Vec2D(rP.x + rD.x * T1, rP.y + rD.y * T1),
       param: T1,
     };
   }
@@ -89,7 +89,7 @@ class Light extends AABB {
    * @param map
    * @param layers
    */
-  private get_occluders(map: WorldMap, layers: Layer[]) {
+  private getOccluders(map: WorldMap, layers: Layer[]) {
     const segments = [
       {
         segment: this.left(),
@@ -136,30 +136,30 @@ class Light extends AABB {
       for (let y = top; y <= bottom; y++) {
         for (let l = 0; l < layers.length; l++) {
           const layer = layers[l];
-          const occluders = map.get_attachments(x, y, layer, 'Occluder');
+          const occluders = map.getAttachments(x, y, layer, 'Occluder');
           for (let i = 0; i < occluders.length; i++) {
-            if (occluders[i].rect.is_in_bounds(this.center)) {
+            if (occluders[i].rect.isInBounds(this.center)) {
               continue;
             }
-            if (map.get_attachments(x, y - 1, layer, 'Occluder').length === 0) {
+            if (map.getAttachments(x, y - 1, layer, 'Occluder').length === 0) {
               segments.push({
                 segment: occluders[i].rect.top(),
                 normal: new Vec2D(0, -1),
               });
             }
-            if (map.get_attachments(x, y + 1, layer, 'Occluder').length === 0) {
+            if (map.getAttachments(x, y + 1, layer, 'Occluder').length === 0) {
               segments.push({
                 segment: occluders[i].rect.bottom(),
                 normal: new Vec2D(0, 1),
               });
             }
-            if (map.get_attachments(x - 1, y, layer, 'Occluder').length === 0) {
+            if (map.getAttachments(x - 1, y, layer, 'Occluder').length === 0) {
               segments.push({
                 segment: occluders[i].rect.left(),
                 normal: new Vec2D(-1, 0),
               });
             }
-            if (map.get_attachments(x + 1, y, layer, 'Occluder').length === 0) {
+            if (map.getAttachments(x + 1, y, layer, 'Occluder').length === 0) {
               segments.push({
                 segment: occluders[i].rect.right(),
                 normal: new Vec2D(1, 0),
@@ -177,12 +177,12 @@ class Light extends AABB {
    *
    * @param occluders
    */
-  private filter_occluders(occluders: GeometricSide[]) {
-    const base_angle = Math.atan2(this.dir.y, this.dir.x);
-    const arc_start = base_angle - this.half_angle;
-    const arc_stop = base_angle + this.half_angle;
+  private filterOccluders(occluders: GeometricSide[]) {
+    const baseAngle = Math.atan2(this.dir.y, this.dir.x);
+    const arcStart = baseAngle - this.halfAngle;
+    const arcStop = baseAngle + this.halfAngle;
 
-    const angles = [arc_start, arc_stop];
+    const angles = [arcStart, arcStop];
     const segments = [];
 
     const uniqueAngles = new Set<number>();
@@ -191,23 +191,23 @@ class Light extends AABB {
       if (d.dot(occluder.normal) >= 0) {
         continue;
       }
-      const start_d = occluder.segment.start.sub(this.center);
-      const stop_d = occluder.segment.stop.sub(this.center);
+      const startD = occluder.segment.start.sub(this.center);
+      const stopD = occluder.segment.stop.sub(this.center);
 
-      uniqueAngles.add(Math.atan2(start_d.y, start_d.x));
-      uniqueAngles.add(Math.atan2(stop_d.y, stop_d.x));
+      uniqueAngles.add(Math.atan2(startD.y, startD.x));
+      uniqueAngles.add(Math.atan2(stopD.y, stopD.x));
       segments.push(occluder.segment);
     }
     uniqueAngles.forEach((a) => {
       // Handle corner cases when direction is around the -x axis
       // Ngl this gave me massive hemorrhoids
-      if (arc_stop > Math.PI) {
-        if (a >= arc_stop - 2 * Math.PI && a <= arc_start) {
+      if (arcStop > Math.PI) {
+        if (a >= arcStop - 2 * Math.PI && a <= arcStart) {
           return;
         }
-      } else if (arc_start < -Math.PI) {
-        if (a <= arc_start + 2 * Math.PI && a >= arc_stop) return;
-      } else if (a <= arc_start || a >= arc_stop) {
+      } else if (arcStart < -Math.PI) {
+        if (a <= arcStart + 2 * Math.PI && a >= arcStop) return;
+      } else if (a <= arcStart || a >= arcStop) {
         return;
       }
       angles.push(a - 0.00001, a, a + 0.00001);
@@ -223,7 +223,7 @@ class Light extends AABB {
    * @param angles
    * @param segments
    */
-  private get_points(angles: number[], segments: Segment[]) {
+  private getPoints(angles: number[], segments: Segment[]) {
     const intersects = [];
     for (const angle of angles) {
       const dir = new Vec2D(Math.cos(angle), Math.sin(angle));
@@ -231,7 +231,7 @@ class Light extends AABB {
 
       let closest: any = null;
       for (const segment of segments) {
-        const intersect = this.get_intersection(ray, segment);
+        const intersect = this.getIntersection(ray, segment);
         if (intersect === null) {
           continue;
         }
@@ -249,7 +249,7 @@ class Light extends AABB {
 
     // Sort points around center in clockwise order
     intersects.sort((a, b) => {
-      if (this.half_angle === Math.PI) {
+      if (this.halfAngle === Math.PI) {
         return a.angle - b.angle;
       }
       return (
@@ -266,13 +266,13 @@ class Light extends AABB {
    * @param map
    * @param layers
    */
-  get_polygon(map: WorldMap, layers: Layer[] = []) {
-    const occluders = this.get_occluders(map, layers);
-    const filtered = this.filter_occluders(occluders);
+  getPolygon(map: WorldMap, layers: Layer[] = []) {
+    const occluders = this.getOccluders(map, layers);
+    const filtered = this.filterOccluders(occluders);
 
     const segments = filtered[0];
     const angles = filtered[1];
-    return this.get_points(angles, segments);
+    return this.getPoints(angles, segments);
   }
 }
 

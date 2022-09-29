@@ -26,7 +26,7 @@ class Quadtree extends AABB {
   /**
    * Generate child nodes
    */
-  private generate_chilren() {
+  private generateChilren() {
     const level = this.level - 1;
     const hd = this.dim.scale(0.5);
 
@@ -83,10 +83,10 @@ class Quadtree extends AABB {
       this.container.push(object);
     } else {
       if (this.children.length === 0) {
-        this.generate_chilren();
+        this.generateChilren();
       }
       for (const child of this.children) {
-        if (child.is_colliding(object)) {
+        if (child.isColliding(object)) {
           child.insert(object);
         }
       }
@@ -98,7 +98,7 @@ class Quadtree extends AABB {
    *
    * @param object Object to be queried
    */
-  get_neighbors(object: AABB) {
+  getNeighbors(object: AABB) {
     if (this.level <= 0) {
       return this.container;
     }
@@ -106,9 +106,9 @@ class Quadtree extends AABB {
     const set = new Set<string>();
     const neighbors: AABB[] = [];
     for (const child of this.children) {
-      if (child.is_colliding(object)) {
-        for (const neighbor of child.get_neighbors(object)) {
-          const key = neighbor.center.to_string() + neighbor.dim.to_string();
+      if (child.isColliding(object)) {
+        for (const neighbor of child.getNeighbors(object)) {
+          const key = neighbor.center.toString() + neighbor.dim.toString();
           if (set.has(key)) {
             continue;
           }

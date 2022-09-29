@@ -145,7 +145,7 @@ interface WorldMap {
    * @param y
    * @param layer
    */
-  get_tile(x: number, y: number, layer: Layer): Tile;
+  getTile(x: number, y: number, layer: Layer): Tile;
 
   /**
    * Get the list of attachments for a given tile
@@ -155,7 +155,7 @@ interface WorldMap {
    * @param layer
    * @param type
    */
-  get_attachments<AttachmentType extends TileAttachment['type']>(
+  getAttachments<AttachmentType extends TileAttachment['type']>(
     x: number,
     y: number,
     layer: Layer,
@@ -165,12 +165,12 @@ interface WorldMap {
   /**
    * Get all spawns on the map
    */
-  get_spawns(): Map<SpawnAttachment['id'], AABB>;
+  getSpawns(): Map<SpawnAttachment['id'], AABB>;
 
   /**
    * Get all lights on the map
    */
-  get_lights(): Light[];
+  getLights(): Light[];
 }
 
 /**
@@ -180,7 +180,7 @@ interface ServerMap extends WorldMap {
   /**
    * Get socket transferrable data
    */
-  get_socket_data(): WorldMapSocketData;
+  getSocketData(): WorldMapSocketData;
 }
 
 export { MapLayers };

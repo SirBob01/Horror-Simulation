@@ -64,7 +64,7 @@ interface Controllable {
    *
    * @param event
    */
-  handle_input(event: InputEvent): void;
+  handleInput(event: InputEvent): void;
 }
 
 export type { InputEvent, ButtonEvent, MouseEvent, Controllable };

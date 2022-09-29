@@ -6,7 +6,7 @@ import { Entity } from './Entity';
  * Bullet projectile fired from the player gun
  */
 class Bullet extends Entity {
-  private source_id: Id;
+  private sourceId: Id;
 
   /**
    * Create a new bullet
@@ -21,13 +21,13 @@ class Bullet extends Entity {
     super('friendly', x, y, 5, 5, 'Blocker');
     this.dir.x = dx;
     this.dir.y = dy;
-    this.source_id = source.id;
+    this.sourceId = source.id;
   }
 
   /**
    * Destroy the bullet on contact with a map tile
    */
-  on_collide() {
+  onCollide() {
     this.kill();
   }
 
@@ -37,8 +37,8 @@ class Bullet extends Entity {
    * @param dt Delta time
    */
   update(dt: number) {
-    const bullet_speed = 2;
-    this.vel = this.dir.scale(bullet_speed);
+    const bulletSpeed = 2;
+    this.vel = this.dir.scale(bulletSpeed);
   }
 
   /**
@@ -47,7 +47,7 @@ class Bullet extends Entity {
    *
    * @param entity
    */
-  interact_with(entity: Entity) {
+  interactWith(entity: Entity) {
     if (entity.align !== this.align) {
       this.kill();
     }
@@ -56,14 +56,14 @@ class Bullet extends Entity {
   /**
    * Get the information that will be transmitted via socket
    */
-  get_socket_data() {
+  getSocketData() {
     return {
       type: 'bullet',
       id: this.id,
       center: this.center,
       dir: this.dir,
       vel: this.vel,
-      source_id: this.source_id,
+      sourceId: this.sourceId,
     } as BulletEntitySocketData;
   }
 
@@ -72,7 +72,7 @@ class Bullet extends Entity {
    *
    * @param data
    */
-  set_socket_data(data: BulletEntitySocketData) {
+  setSocketData(data: BulletEntitySocketData) {
     this.center.x = data.center.x;
     this.center.y = data.center.y;
 
@@ -82,7 +82,7 @@ class Bullet extends Entity {
     this.vel.x = data.vel.x;
     this.vel.y = data.vel.y;
 
-    this.source_id = data.source_id;
+    this.sourceId = data.sourceId;
   }
 }
 

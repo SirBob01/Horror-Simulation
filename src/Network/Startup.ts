@@ -14,8 +14,8 @@ interface PlayerSocketData {
  */
 interface LobbySocketData {
   players: PlayerSocketData[];
-  player_id: string;
-  player_name: string;
+  playerId: string;
+  playerName: string;
 }
 
 /**
@@ -23,7 +23,7 @@ interface LobbySocketData {
  */
 interface StartSocketData {
   key: string;
-  map_data: WorldMapSocketData;
+  mapData: WorldMapSocketData;
 }
 
 export type { PlayerSocketData, LobbySocketData, StartSocketData };

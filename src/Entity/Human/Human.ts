@@ -1,5 +1,5 @@
 import { Color, Vec2D } from 'dynamojs-engine';
-import { shoot_sound, shoot_click_sound, reload_sound } from '../../Assets';
+import { shootSound, shootClickSound, reloadSound } from '../../Assets';
 import { Bullet } from '../Bullet';
 import { Entity } from '../Entity';
 import { Flashlight } from './Flashlight';
@@ -14,12 +14,12 @@ interface HumanCallbacks {
   /**
    * Callback when the human reloads
    */
-  on_reload(): void;
+  onReload(): void;
 
   /**
    * Callback when the human shoots
    */
-  on_shoot(): void;
+  onShoot(): void;
 }
 
 /**
@@ -28,22 +28,22 @@ interface HumanCallbacks {
 class Human extends Entity implements Controllable {
   speed: number;
 
-  max_health: number;
+  maxHealth: number;
   health: number;
 
-  max_ammo: number;
+  maxAmmo: number;
   ammo: number;
-  ammo_inventory: number;
+  ammoInventory: number;
 
   reloading: boolean;
-  max_reload_timer: number;
-  reload_timer: number;
+  maxReloadTimer: number;
+  reloadTimer: number;
 
-  max_shoot_timer;
-  shoot_timer;
+  maxShootTimer;
+  shootTimer;
 
-  muzzle_flash: Light;
-  muzzle_timer: number;
+  muzzleFlash: Light;
+  muzzleTimer: number;
 
   flashlight: Flashlight;
 
@@ -59,18 +59,18 @@ class Human extends Entity implements Controllable {
     super('friendly', x, y, 24, 48, 'Collider');
     this.speed = 0.1;
 
-    this.max_health = 3;
+    this.maxHealth = 3;
     this.health = 3;
 
-    this.max_ammo = 8;
+    this.maxAmmo = 8;
     this.ammo = 8;
-    this.ammo_inventory = 24;
+    this.ammoInventory = 24;
 
     this.reloading = false;
-    this.max_reload_timer = 3000;
-    this.reload_timer = 0;
+    this.maxReloadTimer = 3000;
+    this.reloadTimer = 0;
 
-    this.muzzle_flash = new Light(
+    this.muzzleFlash = new Light(
       this.center.x,
       this.center.y,
       300,
@@ -78,16 +78,16 @@ class Human extends Entity implements Controllable {
       new Vec2D(1, 0),
       Math.PI
     );
-    this.muzzle_timer = 0;
+    this.muzzleTimer = 0;
 
-    this.max_shoot_timer = 500;
-    this.shoot_timer = 0;
+    this.maxShootTimer = 500;
+    this.shootTimer = 0;
 
     this.flashlight = new Flashlight(this);
 
     this.callbacks = {
-      on_reload: () => {},
-      on_shoot: () => {},
+      onReload: () => {},
+      onShoot: () => {},
     };
   }
 
@@ -96,7 +96,7 @@ class Human extends Entity implements Controllable {
    *
    * @param event
    */
-  handle_input(event: InputEvent): void {
+  handleInput(event: InputEvent): void {
     if (event.type === 'left') {
       if (event.pressed) {
         this.vel.x = -this.speed;
@@ -147,7 +147,7 @@ class Human extends Entity implements Controllable {
    */
   update(dt: number) {
     // Adjust movement speed depending on health
-    this.speed = 0.1 - 0.025 * (this.max_health - this.health);
+    this.speed = 0.1 - 0.025 * (this.maxHealth - this.health);
 
     // Kill the human when 0 health
     if (this.health <= 0) {
@@ -155,25 +155,25 @@ class Human extends Entity implements Controllable {
     }
 
     // Handle shooting
-    if (this.shoot_timer <= 0) {
-      this.shoot_timer = 0;
+    if (this.shootTimer <= 0) {
+      this.shootTimer = 0;
     } else {
-      this.shoot_timer -= dt;
+      this.shootTimer -= dt;
     }
 
     // Handle reloading
     if (this.reloading) {
-      this.reload_timer += dt;
-      if (this.reload_timer >= this.max_reload_timer) {
-        let bullet_count = this.max_ammo - this.ammo;
-        if (this.ammo_inventory < bullet_count) {
-          bullet_count = this.ammo_inventory;
+      this.reloadTimer += dt;
+      if (this.reloadTimer >= this.maxReloadTimer) {
+        let bulletCount = this.maxAmmo - this.ammo;
+        if (this.ammoInventory < bulletCount) {
+          bulletCount = this.ammoInventory;
         }
-        this.ammo_inventory -= bullet_count;
-        this.ammo += bullet_count;
-        this.reload_timer = 0;
+        this.ammoInventory -= bulletCount;
+        this.ammo += bulletCount;
+        this.reloadTimer = 0;
         this.reloading = false;
-        this.callbacks.on_reload();
+        this.callbacks.onReload();
       }
     }
 
@@ -182,61 +182,57 @@ class Human extends Entity implements Controllable {
     this.output.lights.push(this.flashlight.core, this.flashlight.cone);
 
     // Muzzle flash effect
-    if (this.muzzle_timer > 0) {
-      this.muzzle_timer -= dt;
-      this.muzzle_flash.center = this.center;
-      this.output.lights.push(this.muzzle_flash);
+    if (this.muzzleTimer > 0) {
+      this.muzzleTimer -= dt;
+      this.muzzleFlash.center = this.center;
+      this.output.lights.push(this.muzzleFlash);
     }
   }
 
   /**
    * Test if the human can shoot
    */
-  can_shoot() {
-    return !this.reloading && this.shoot_timer === 0;
+  canShoot() {
+    return !this.reloading && this.shootTimer === 0;
   }
 
   /**
    * Shoot the gun
    */
   shoot() {
-    if (!this.can_shoot()) {
+    if (!this.canShoot()) {
       return;
     }
-    this.callbacks.on_shoot();
+    this.callbacks.onShoot();
     if (this.ammo > 0) {
       const dir = this.dir.unit();
       this.output.entities.push(
         new Bullet(this.center.x, this.center.y, dir.x, dir.y, this)
       );
       this.output.sounds.push({
-        sound: shoot_sound,
+        sound: shootSound,
         position: this.center,
         volume: 0.25,
       });
-      this.muzzle_timer = 50;
+      this.muzzleTimer = 50;
       this.ammo--;
     } else {
       this.output.sounds.push({
-        sound: shoot_click_sound,
+        sound: shootClickSound,
         position: this.center,
         volume: 0.05,
       });
     }
-    this.shoot_timer = this.max_shoot_timer;
+    this.shootTimer = this.maxShootTimer;
   }
 
   /**
    * Reload the gun
    */
   reload() {
-    if (
-      !this.reloading &&
-      this.ammo_inventory > 0 &&
-      this.ammo < this.max_ammo
-    ) {
+    if (!this.reloading && this.ammoInventory > 0 && this.ammo < this.maxAmmo) {
       this.output.sounds.push({
-        sound: reload_sound,
+        sound: reloadSound,
         position: this.center,
         volume: 0.05,
       });
@@ -247,7 +243,7 @@ class Human extends Entity implements Controllable {
   /**
    * Get the data that will be transmitted via socket
    */
-  get_socket_data() {
+  getSocketData() {
     return {
       type: 'human',
       id: this.id,
@@ -268,7 +264,7 @@ class Human extends Entity implements Controllable {
    *
    * @param data
    */
-  set_socket_data(data: HumanEntitySocketData) {
+  setSocketData(data: HumanEntitySocketData) {
     this.center.x = data.center.x;
     this.center.y = data.center.y;
 

@@ -1,5 +1,5 @@
 import { randrange, Vec2D } from 'dynamojs-engine';
-import { hit_sounds } from '../Assets';
+import { hitSounds } from '../Assets';
 import { MonsterEntitySocketData } from '../Network';
 import { Blood } from '../Particle';
 import { Bullet } from './Bullet';
@@ -10,13 +10,13 @@ import { Entity } from './Entity';
  * Monster entity
  */
 class Monster extends Entity implements Controllable {
-  target_vel: Vec2D;
-  private walk_speed: number;
-  private chase_speed: number;
-  private max_speed: number;
-  private current_speed: number;
+  targetVel: Vec2D;
+  private walkSpeed: number;
+  private chaseSpeed: number;
+  private maxSpeed: number;
+  private currentSpeed: number;
   private heading: number;
-  private patrol_points: Vec2D[];
+  private patrolPoints: Vec2D[];
 
   /**
    * Create a new monster
@@ -26,15 +26,15 @@ class Monster extends Entity implements Controllable {
    */
   constructor(x: number, y: number) {
     super('hostile', x, y, 36, 72, 'Collider', 250, Math.PI / 4, 250);
-    this.target_vel = new Vec2D(0, 0);
+    this.targetVel = new Vec2D(0, 0);
 
-    this.walk_speed = 0.08;
-    this.chase_speed = 0.09;
-    this.max_speed = this.chase_speed;
-    this.current_speed = 0;
+    this.walkSpeed = 0.08;
+    this.chaseSpeed = 0.09;
+    this.maxSpeed = this.chaseSpeed;
+    this.currentSpeed = 0;
 
     this.heading = 0;
-    this.patrol_points = [];
+    this.patrolPoints = [];
   }
 
   /**
@@ -42,33 +42,33 @@ class Monster extends Entity implements Controllable {
    *
    * @param event
    */
-  handle_input(event: InputEvent) {
+  handleInput(event: InputEvent) {
     if (event.type === 'left') {
       if (event.pressed) {
-        this.target_vel.x = -this.max_speed;
-      } else if (this.target_vel.x < 0) {
-        this.target_vel.x = 0;
+        this.targetVel.x = -this.maxSpeed;
+      } else if (this.targetVel.x < 0) {
+        this.targetVel.x = 0;
       }
     }
     if (event.type === 'right') {
       if (event.pressed) {
-        this.target_vel.x = this.max_speed;
-      } else if (this.target_vel.x > 0) {
-        this.target_vel.x = 0;
+        this.targetVel.x = this.maxSpeed;
+      } else if (this.targetVel.x > 0) {
+        this.targetVel.x = 0;
       }
     }
     if (event.type === 'up') {
       if (event.pressed) {
-        this.target_vel.y = -this.max_speed;
-      } else if (this.target_vel.y < 0) {
-        this.target_vel.y = 0;
+        this.targetVel.y = -this.maxSpeed;
+      } else if (this.targetVel.y < 0) {
+        this.targetVel.y = 0;
       }
     }
     if (event.type === 'down') {
       if (event.pressed) {
-        this.target_vel.y = this.max_speed;
-      } else if (this.target_vel.y > 0) {
-        this.target_vel.y = 0;
+        this.targetVel.y = this.maxSpeed;
+      } else if (this.targetVel.y > 0) {
+        this.targetVel.y = 0;
       }
     }
     if (event.type === 'mouse') {
@@ -83,9 +83,9 @@ class Monster extends Entity implements Controllable {
    * @param dt Delta time
    */
   update(dt: number) {
-    this.accel = this.target_vel.sub(this.vel).scale(1 / 20);
-    this.vel.x = Math.min(this.vel.x, this.max_speed);
-    this.vel.y = Math.min(this.vel.y, this.max_speed);
+    this.accel = this.targetVel.sub(this.vel).scale(1 / 20);
+    this.vel.x = Math.min(this.vel.x, this.maxSpeed);
+    this.vel.y = Math.min(this.vel.y, this.maxSpeed);
   }
 
   /**
@@ -93,7 +93,7 @@ class Monster extends Entity implements Controllable {
    *
    * @param entity
    */
-  interact_with(entity: Entity) {
+  interactWith(entity: Entity) {
     if (entity instanceof Bullet) {
       const { center, dir } = entity;
       const angle = Math.atan2(dir.y, dir.x);
@@ -111,7 +111,7 @@ class Monster extends Entity implements Controllable {
       this.output.sounds.push({
         volume: 0.15,
         position: this.center,
-        sound: hit_sounds[Math.floor(Math.random() * hit_sounds.length)],
+        sound: hitSounds[Math.floor(Math.random() * hitSounds.length)],
       });
     }
   }
@@ -119,7 +119,7 @@ class Monster extends Entity implements Controllable {
   /**
    * Get the information that will be transmitted via socket
    */
-  get_socket_data() {
+  getSocketData() {
     return {
       type: 'monster',
       id: this.id,
@@ -134,7 +134,7 @@ class Monster extends Entity implements Controllable {
    *
    * @param data
    */
-  set_socket_data(data: MonsterEntitySocketData) {
+  setSocketData(data: MonsterEntitySocketData) {
     this.center.x = data.center.x;
     this.center.y = data.center.y;
 
