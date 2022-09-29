@@ -12,22 +12,22 @@ interface ClientToServerEvents {
   /**
    * Create a new lobby
    */
-  create: (callback: (key: string) => void) => void;
+  create: () => void;
 
   /**
    * Join an existing lobby
    */
-  join: (key: string, callback: (success: boolean) => void) => void;
+  join: (key: string) => void;
 
   /**
    * Set the name of a player
    */
-  setname: (name: string) => void;
+  setName: (name: string) => void;
 
   /**
    * Name of the map to be played
    */
-  setmap: (name: string) => void;
+  setMap: (name: string) => void;
 
   /**
    * Start a game
@@ -54,6 +54,16 @@ interface ClientToServerEvents {
  * Server-to-client events
  */
 interface ServerToClientEvents {
+  /**
+   * Response to creating a new lobby
+   */
+  createResponse: (key: string) => void;
+
+  /**
+   * Response to joining a lobby
+   */
+  joinResponse: (success: boolean) => void;
+
   /**
    * Emit lobby information to the players
    */
