@@ -12,8 +12,11 @@ import {
   HumanEntitySocketData,
   MonsterEntitySocketData,
 } from './Entity';
+import channelConfigs, { NetworkChannels } from './Channels';
 
+export { channelConfigs };
 export type {
+  NetworkChannels,
   ClientToServerEvents,
   ServerToClientEvents,
   InputEvent,
