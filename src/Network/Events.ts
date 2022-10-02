@@ -77,7 +77,12 @@ interface ServerToClientEvents {
   /**
    * Live broadcast live game state information to the players
    */
-  broadcast: (state: GameStateSocketData) => void;
+  broadcastState: (state: GameStateSocketData) => void;
+
+  /**
+   * Broadcast player input information to other players
+   */
+  broadcastInput: (state: InputStateSocketData) => void;
 
   /**
    * Handle transitioning between maps
