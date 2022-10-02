@@ -82,7 +82,7 @@ interface ServerToClientEvents {
   /**
    * Broadcast player input information to other players
    */
-  broadcastInput: (state: InputStateSocketData) => void;
+  broadcastInput: (playerEntityId: number, state: InputStateSocketData) => void;
 
   /**
    * Handle transitioning between maps
