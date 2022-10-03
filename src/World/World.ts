@@ -1,5 +1,5 @@
 import { clamp } from 'dynamojs-engine';
-import { Entity, Human, Monster, Syncable } from '../Entity';
+import { Entity, Human, Monster } from '../Entity';
 import { Light } from './Light';
 import { Sound } from './Sound';
 import { MapLayers, WorldMap } from '../Map';
@@ -314,7 +314,7 @@ class World {
   getSocketData(playerEntityId: Id, seq: number) {
     const entities: EntitySocketData[] = [];
     this.entities.forEach((entity) => {
-      const syncable = entity as Syncable;
+      const syncable = entity.asSyncable();
       if (syncable) {
         entities.push(syncable.getSocketData());
       }

@@ -1,10 +1,9 @@
 import { EntitySocketData } from '../../Network';
-import { Entity } from '../Entity';
 
 /**
  * An entity that needs to be updated in the client
  */
-interface Syncable extends Entity {
+interface Syncable {
   /**
    * Get the data required for socket transmission
    */
@@ -14,6 +13,11 @@ interface Syncable extends Entity {
    * Update the entity given transmitted socket data
    */
   setSocketData(data: EntitySocketData): void;
+
+  /**
+   * Convert instance
+   */
+  asSyncable(): Syncable;
 }
 
 export type { Syncable };

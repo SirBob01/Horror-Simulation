@@ -4,6 +4,7 @@ import { Light, Sound } from '../World';
 import { SolidAttachment } from '../Map';
 import { Particle } from '../Particle';
 import { Id, IdGenerator, shortestPath } from '../Utils';
+import { Controllable, Syncable } from './Interfaces';
 
 /**
  * Various alignments of the entities
@@ -264,6 +265,20 @@ class Entity extends AABB {
    */
   update(dt: number) {
     return;
+  }
+
+  /**
+   * Convert instance to syncable object, if possible
+   */
+  asControllable(): (this & Controllable) | null {
+    return null;
+  }
+
+  /**
+   * Convert instance to syncable object, if possible
+   */
+  asSyncable(): (this & Syncable) | null {
+    return null;
   }
 }
 

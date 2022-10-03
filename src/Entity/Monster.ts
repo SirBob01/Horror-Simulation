@@ -144,6 +144,20 @@ class Monster extends Entity implements Controllable, Syncable {
     this.vel.x = data.vel.x;
     this.vel.y = data.vel.y;
   }
+
+  /**
+   * Convert to controllable instance
+   */
+  asControllable(): this & Controllable {
+    return this;
+  }
+
+  /**
+   * Convert to syncable instance
+   */
+  asSyncable(): this & Syncable {
+    return this;
+  }
 }
 
 export { Monster };
