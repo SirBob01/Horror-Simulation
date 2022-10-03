@@ -1,4 +1,5 @@
 import { AABB } from 'dynamojs-engine';
+import { Id, IdGenerator } from '../Utils';
 import { Light } from '../World';
 
 /**
@@ -11,6 +12,7 @@ import { Light } from '../World';
  * before it is deleted
  */
 class Particle extends AABB {
+  id: Id;
   name: string;
   persist: boolean;
   alive: boolean;
@@ -35,6 +37,7 @@ class Particle extends AABB {
     persist: boolean
   ) {
     super(x, y, w, h);
+    this.id = IdGenerator.generate();
     this.name = name;
     this.persist = persist;
     this.alive = true;

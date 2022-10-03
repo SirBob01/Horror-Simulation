@@ -22,7 +22,7 @@ type WorldExitHandler = (
 class World {
   map: WorldMap;
   entities: Map<Id, Entity>;
-  particles: Particle[];
+  particles: Map<Id, Particle>;
   mapLights: Light[];
   lights: Light[];
   sounds: Sound[];
@@ -40,7 +40,7 @@ class World {
 
     // Objects
     this.entities = new Map();
-    this.particles = []; // Non-interactive entities used for visual effects
+    this.particles = new Map();
 
     // World data for sensors
     this.mapLights = this.map.getLights();
@@ -226,9 +226,11 @@ class World {
       ent.output.entities.forEach((ent2) => {
         this.addEntity(ent2);
       });
+      ent.output.particles.forEach((particle) => {
+        this.addParticle(particle);
+      });
       this.lights.push(...ent.output.lights);
       this.sounds.push(...ent.output.sounds);
-      this.particles.push(...ent.output.particles);
       if (ent.alive) {
         ent.input = {
           lights: [],
@@ -245,7 +247,7 @@ class World {
           particles: [],
         };
       } else {
-        this.entities.delete(ent.id);
+        this.removeEntity(ent);
       }
     });
   }
@@ -257,24 +259,23 @@ class World {
    */
   private updateParticles(dt: number) {
     // Update particles
-    for (const particle of this.particles) {
+    this.particles.forEach((particle) => {
       particle.update(dt);
-    }
+    });
 
     // Register all particle output for next update step
-    for (const particle of this.particles) {
+    this.particles.forEach((particle) => {
+      particle.children.forEach((child) => {
+        this.addParticle(child);
+      });
       this.lights.push(...particle.lights);
-      this.particles.push(...particle.children);
       if (particle.alive || particle.persist) {
         particle.children = [];
         particle.lights = [];
       } else {
-        const index = this.particles.indexOf(particle, 0);
-        if (index > -1) {
-          this.particles.splice(index, 1);
-        }
+        this.removeParticle(particle);
       }
-    }
+    });
   }
 
   /**
@@ -288,6 +289,15 @@ class World {
   }
 
   /**
+   * Add a new entity to the world
+   *
+   * @param entity
+   */
+  addEntity(entity: Entity) {
+    this.entities.set(entity.id, entity);
+  }
+
+  /**
    * Remove an existing entity from the world
    *
    * @param entity
@@ -297,12 +307,21 @@ class World {
   }
 
   /**
-   * Add a new external entity to the world
+   * Add a new particle to the world
    *
-   * @param entity
+   * @param particle
    */
-  addEntity(entity: Entity) {
-    this.entities.set(entity.id, entity);
+  addParticle(particle: Particle) {
+    this.particles.set(particle.id, particle);
+  }
+
+  /**
+   * Remove an existing particle from the world
+   *
+   * @param particle
+   */
+  removeParticle(particle: Particle) {
+    this.particles.delete(particle.id);
   }
 
   /**
