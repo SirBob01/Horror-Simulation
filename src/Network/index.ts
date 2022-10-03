@@ -7,7 +7,6 @@ import {
   MapTransitionSocketData,
 } from './State';
 import {
-  BulletEntitySocketData,
   EntitySocketData,
   HumanEntitySocketData,
   MonsterEntitySocketData,
@@ -26,7 +25,6 @@ export type {
   EntitySocketData,
   HumanEntitySocketData,
   MonsterEntitySocketData,
-  BulletEntitySocketData,
   InputStateSocketData,
   GameStateSocketData,
   MapTransitionSocketData,

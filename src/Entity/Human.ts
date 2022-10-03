@@ -1,11 +1,11 @@
 import { Color, Vec2D } from 'dynamojs-engine';
-import { shootSound, shootClickSound, reloadSound } from '../../Assets';
-import { Bullet } from '../Bullet';
-import { Entity } from '../Entity';
+import { shootSound, shootClickSound, reloadSound } from '../Assets';
+import { Bullet } from './Bullet';
+import { Entity } from './Entity';
 import { Flashlight } from './Flashlight';
-import { Light } from '../../World';
-import { Controllable, InputEvent } from '../Controllable';
-import { HumanEntitySocketData } from '../../Network';
+import { Light } from '../World';
+import { Syncable, Controllable, InputEvent } from './Interfaces';
+import { HumanEntitySocketData } from '../Network';
 
 /**
  * Human callback methods
@@ -25,7 +25,7 @@ interface HumanCallbacks {
 /**
  * Human character
  */
-class Human extends Entity implements Controllable {
+class Human extends Entity implements Controllable, Syncable {
   speed: number;
 
   maxHealth: number;

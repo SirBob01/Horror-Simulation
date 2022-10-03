@@ -1,4 +1,5 @@
 import { Vec2D } from 'dynamojs-engine';
+import { Entity } from '../Entity';
 
 /**
  * Defines the user events that map to keyboard/mouse button input
@@ -58,7 +59,7 @@ type InputEvent = ButtonEvent | MouseEvent;
 /**
  * Interface for controllable entities
  */
-interface Controllable {
+interface Controllable extends Entity {
   /**
    * Input event handler
    *

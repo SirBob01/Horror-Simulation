@@ -37,24 +37,12 @@ interface MonsterEntitySocketData extends BaseEntitySocketData {
 }
 
 /**
- * Monster specific data
- */
-interface BulletEntitySocketData extends BaseEntitySocketData {
-  type: 'bullet';
-  sourceId: number;
-}
-
-/**
  * Socket data for all types of entities
  */
-type EntitySocketData =
-  | HumanEntitySocketData
-  | MonsterEntitySocketData
-  | BulletEntitySocketData;
+type EntitySocketData = HumanEntitySocketData | MonsterEntitySocketData;
 
 export type {
   EntitySocketData,
   HumanEntitySocketData,
   MonsterEntitySocketData,
-  BulletEntitySocketData,
 };

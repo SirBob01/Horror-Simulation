@@ -1,15 +1,15 @@
 import { randrange, Vec2D } from 'dynamojs-engine';
 import { hitSounds } from '../Assets';
 import { MonsterEntitySocketData } from '../Network';
+import { Entity } from './Entity';
 import { Blood } from '../Particle';
 import { Bullet } from './Bullet';
-import { Controllable, InputEvent } from './Controllable';
-import { Entity } from './Entity';
+import { Syncable, Controllable, InputEvent } from './Interfaces';
 
 /**
  * Monster entity
  */
-class Monster extends Entity implements Controllable {
+class Monster extends Entity implements Controllable, Syncable {
   targetVel: Vec2D;
   private walkSpeed: number;
   private chaseSpeed: number;

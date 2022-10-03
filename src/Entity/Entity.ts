@@ -4,7 +4,6 @@ import { Light, Sound } from '../World';
 import { SolidAttachment } from '../Map';
 import { Particle } from '../Particle';
 import { Id, IdGenerator, shortestPath } from '../Utils';
-import { EntitySocketData } from '../Network';
 
 /**
  * Various alignments of the entities
@@ -91,7 +90,7 @@ interface CollisionTable {
  *
  * Individual actors in the game world
  */
-abstract class Entity extends AABB {
+class Entity extends AABB {
   id: Id;
   align: EntityAlignment;
   vel: Vec2D;
@@ -266,16 +265,6 @@ abstract class Entity extends AABB {
   update(dt: number) {
     return;
   }
-
-  /**
-   * Get the data required for socket transmission
-   */
-  abstract getSocketData(): EntitySocketData;
-
-  /**
-   * Update the entity given transmitted socket data
-   */
-  abstract setSocketData(data: EntitySocketData): void;
 }
 
 export { Entity };

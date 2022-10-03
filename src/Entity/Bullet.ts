@@ -1,4 +1,3 @@
-import { BulletEntitySocketData } from '../Network';
 import { Id } from '../Utils';
 import { Entity } from './Entity';
 
@@ -51,38 +50,6 @@ class Bullet extends Entity {
     if (entity.align !== this.align) {
       this.kill();
     }
-  }
-
-  /**
-   * Get the information that will be transmitted via socket
-   */
-  getSocketData() {
-    return {
-      type: 'bullet',
-      id: this.id,
-      center: this.center,
-      dir: this.dir,
-      vel: this.vel,
-      sourceId: this.sourceId,
-    } as BulletEntitySocketData;
-  }
-
-  /**
-   * Update state from socket data
-   *
-   * @param data
-   */
-  setSocketData(data: BulletEntitySocketData) {
-    this.center.x = data.center.x;
-    this.center.y = data.center.y;
-
-    this.dir.x = data.dir.x;
-    this.dir.y = data.dir.y;
-
-    this.vel.x = data.vel.x;
-    this.vel.y = data.vel.y;
-
-    this.sourceId = data.sourceId;
   }
 }
 

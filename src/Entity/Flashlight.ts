@@ -1,5 +1,5 @@
 import { clamp, Color, Vec2D } from 'dynamojs-engine';
-import { Light } from '../../World';
+import { Light } from '../World';
 import { Entity } from '../Entity';
 
 /**

@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "lint": "prettier --write src/* && eslint --fix src",
-    "build": "tsc",
+    "build": "rm -r build; tsc",
     "postinstall": "node branchBuild.js"
   },
   "repository": {
