@@ -5,12 +5,16 @@ const channelConfigs = {
   admin: {
     id: 0,
     ordered: true,
-    reliable: true,
   },
-  state: {
+  stateReliable: {
     id: 1,
     ordered: false,
-    reliable: false,
+    maxRetransmits: 3,
+  },
+  stateUnreliable: {
+    id: 2,
+    ordered: false,
+    maxRetransmits: 0,
   },
 };
 type NetworkChannels = keyof typeof channelConfigs;

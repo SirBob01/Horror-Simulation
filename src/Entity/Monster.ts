@@ -29,7 +29,7 @@ class Monster extends Entity implements Controllable, Syncable {
     this.targetVel = new Vec2D(0, 0);
 
     this.walkSpeed = 0.08;
-    this.chaseSpeed = 0.09;
+    this.chaseSpeed = 0.15;
     this.maxSpeed = this.chaseSpeed;
     this.currentSpeed = 0;
 
