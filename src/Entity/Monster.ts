@@ -84,8 +84,8 @@ class Monster extends Entity implements Controllable, Syncable {
    */
   update(dt: number) {
     this.accel = this.targetVel.sub(this.vel).scale(1 / 20);
-    this.vel.x = Math.min(this.vel.x, this.maxSpeed);
-    this.vel.y = Math.min(this.vel.y, this.maxSpeed);
+    this.vel.x = Math.max(Math.min(this.vel.x, this.maxSpeed), -this.maxSpeed);
+    this.vel.y = Math.max(Math.min(this.vel.y, this.maxSpeed), -this.maxSpeed);
   }
 
   /**

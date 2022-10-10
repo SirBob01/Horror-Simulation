@@ -36,7 +36,7 @@ class Bullet extends Entity {
    * @param dt Delta time
    */
   update(dt: number) {
-    const bulletSpeed = 2;
+    const bulletSpeed = 1.5;
     this.vel = this.dir.scale(bulletSpeed);
   }
 
